@@ -13,9 +13,9 @@ type TProductCardProps = {
 
 /**
  * Картка товару каталогу: фото + назва. Чисто по макету — без ціни та кнопки «в кошик»
- * (на сайті немає оплати/покупки). Поки фото вантажиться — сіре тло (bg-muted), картинка
- * плавно проявляється (fade-in по opacity). priority — для карток першого екрана (LCP):
- * вони пріоритетні й показуються одразу, без fade.
+ * (на сайті немає оплати/покупки). Поки фото вантажиться — сіре тло (bg-muted), яке
+ * прибирається після завантаження; картинка плавно проявляється (fade-in по opacity).
+ * priority — для карток першого екрана (LCP): вони пріоритетні й показуються одразу, без fade.
  */
 export function ProductCard({
   product,
@@ -33,7 +33,12 @@ export function ProductCard({
 
   return (
     <article className={cn("flex flex-col text-center", className)}>
-      <div className="relative mb-4 aspect-[3/4] w-full overflow-hidden bg-muted">
+      <div
+        className={cn(
+          "relative mb-4 aspect-[3/4] w-full overflow-hidden",
+          !isLoaded && "bg-muted",
+        )}
+      >
         <Image
           ref={imageRef}
           src={image.url}

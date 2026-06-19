@@ -1,4 +1,5 @@
 import { cn } from "@/utils/cn";
+import { Skeleton } from "@/ui/Skeleton";
 
 type TProductCardSkeletonProps = {
   className?: string;
@@ -6,14 +7,14 @@ type TProductCardSkeletonProps = {
 
 /**
  * Скелетон картки товару — та сама геометрія, що й ProductCard (aspect-[3/4] + рядок
- * назви), щоб не було зсуву макета (CLS). Пульсація лише через opacity (animate-pulse),
- * вимикається за prefers-reduced-motion.
+ * назви), щоб не було зсуву макета (CLS). Фото й назва — окремі Skeleton-блоки з
+ * shimmer-переливанням; за prefers-reduced-motion лишається статичне тло.
  */
 export function ProductCardSkeleton({ className }: TProductCardSkeletonProps) {
   return (
     <div className={cn("flex flex-col", className)} aria-hidden="true">
-      <div className="mb-4 aspect-[3/4] w-full animate-pulse bg-muted motion-reduce:animate-none" />
-      <div className="mx-auto mt-1 h-4 w-2/3 animate-pulse rounded bg-muted motion-reduce:animate-none md:h-5" />
+      <Skeleton className="mb-4 aspect-[3/4] w-full" />
+      <Skeleton className="mx-auto mt-1 h-4 w-2/3 rounded md:h-5" />
     </div>
   );
 }
