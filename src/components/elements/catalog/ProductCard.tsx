@@ -26,7 +26,6 @@ export function ProductCard({ product, className }: TProductCardProps) {
           className="h-full w-full object-contain"
         />
       </div>
-      <p className="text-xs uppercase tracking-widest text-nav">{lineName}</p>
       <h2 className="mt-1 text-sm text-ink-soft md:text-base">{title}</h2>
     </article>
   );

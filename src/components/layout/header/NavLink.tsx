@@ -32,9 +32,14 @@ export function NavLink({ href, children, className, onClick }: TNavLinkProps) {
       className={cn("group relative inline-block uppercase text-nav", className)}
     >
       {children}
+      {/*
+        Зсув підкреслення залежить від контексту хедера (точка nav = 1200px):
+        у бургер-меню (< nav) у посилань є `py-2`, тож тримаємо рыску ближче до
+        тексту (`bottom-0.5`); на десктопі (>= nav) відступу немає — `-bottom-1.5`.
+      */}
       <span
         aria-hidden
-        className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-nav transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100 group-data-[active]:scale-x-100 motion-reduce:transition-none"
+        className="absolute bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-nav transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100 group-data-[active]:scale-x-100 nav:-bottom-1.5 motion-reduce:transition-none"
       />
     </Link>
   );

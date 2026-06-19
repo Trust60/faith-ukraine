@@ -16,11 +16,14 @@ export const slugField = ({
 }: TSlugFieldArgs = {}): Field => ({
   name: "slug",
   type: "text",
+  label: "URL (slug)",
   required: true,
   unique: true,
   index: true,
   admin: {
     position: "sidebar",
+    description:
+      "Частина URL. Лишіть порожнім — заповниться автоматично з назви.",
   },
   hooks: {
     beforeValidate: [

@@ -156,6 +156,7 @@ export interface Media {
    * Альтернативний текст для доступності (a11y) та SEO.
    */
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -193,6 +194,9 @@ export interface Media {
 export interface ProductLine {
   id: number;
   name: string;
+  /**
+   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   */
   slug: string;
   /**
    * Порядок лінійки в каталозі (менше число — вище).
@@ -208,6 +212,9 @@ export interface ProductLine {
 export interface Product {
   id: number;
   title: string;
+  /**
+   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   */
   slug: string;
   line: number | ProductLine;
   image: number | Media;
@@ -348,6 +355,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

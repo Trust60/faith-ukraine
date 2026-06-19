@@ -7,6 +7,10 @@ import { slugField } from "@/fields/slug";
  */
 export const Products: CollectionConfig = {
   slug: "products",
+  labels: {
+    singular: "Товар",
+    plural: "Товари",
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "line", "order", "_status"],
@@ -21,6 +25,7 @@ export const Products: CollectionConfig = {
     {
       name: "title",
       type: "text",
+      label: "Назва",
       required: true,
     },
     slugField(),
@@ -28,17 +33,20 @@ export const Products: CollectionConfig = {
       name: "line",
       type: "relationship",
       relationTo: "product-lines",
+      label: "Лінійка",
       required: true,
     },
     {
       name: "image",
       type: "upload",
       relationTo: "media",
+      label: "Фото",
       required: true,
     },
     {
       name: "order",
       type: "number",
+      label: "Порядок",
       defaultValue: 0,
       admin: {
         description: "Порядок усередині лінійки (менше число — вище).",
@@ -47,6 +55,7 @@ export const Products: CollectionConfig = {
     {
       name: "volume",
       type: "text",
+      label: "Об'єм",
       admin: {
         description: "Напр. «150 ml». На картці каталогу не показується.",
       },
@@ -54,6 +63,7 @@ export const Products: CollectionConfig = {
     {
       name: "description",
       type: "richText",
+      label: "Опис",
     },
   ],
 };

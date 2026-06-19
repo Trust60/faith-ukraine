@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.*
+# проєкт на pnpm — npm/yarn лок-файли не комітимо (інакше Vercel плутає менеджер)
+package-lock.json
+yarn.lock
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -33,6 +36,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+.env.local
 
 # payload local uploads (фото товарів — у Supabase Storage, не в репо)
 /media/
