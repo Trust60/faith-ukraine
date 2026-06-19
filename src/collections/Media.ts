@@ -1,4 +1,8 @@
 import type { CollectionBeforeChangeHook, CollectionConfig } from "payload";
+import {
+  revalidateCatalogAfterChange,
+  revalidateCatalogAfterDelete,
+} from "@/collections/hooks/revalidateCatalog";
 
 /**
  * Зображення товарів у Supabase Storage. Кожне зображення (оригінал + розміри
@@ -29,6 +33,8 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeChange: [setPrefixFromFilename],
+    afterChange: [revalidateCatalogAfterChange],
+    afterDelete: [revalidateCatalogAfterDelete],
   },
   upload: {
     mimeTypes: ["image/*"],

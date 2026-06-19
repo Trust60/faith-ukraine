@@ -1,5 +1,9 @@
 import type { CollectionConfig } from "payload";
 import { slugField } from "@/fields/slug";
+import {
+  revalidateCatalogAfterChange,
+  revalidateCatalogAfterDelete,
+} from "@/collections/hooks/revalidateCatalog";
 
 /**
  * Товар каталогу. Базова схема картки: назва, лінійка, фото. Ціни/кошика немає
@@ -20,6 +24,10 @@ export const Products: CollectionConfig = {
   },
   versions: {
     drafts: true,
+  },
+  hooks: {
+    afterChange: [revalidateCatalogAfterChange],
+    afterDelete: [revalidateCatalogAfterDelete],
   },
   fields: [
     {

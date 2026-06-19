@@ -41,16 +41,18 @@ async function placeholderImage(line: string, title: string): Promise<Buffer> {
 const seed = async () => {
   const payload = await getPayloadClient();
   const all = { id: { exists: true } } as const;
+  // Сидинг працює поза реквест-контекстом Next → вимикаємо ревалідацію кешу в хуках.
+  const context = { disableRevalidate: true };
 
   payload.logger.info("Seed: очищення старих даних…");
-  await payload.delete({ collection: "products", where: all });
-  await payload.delete({ collection: "product-lines", where: all });
-  await payload.delete({ collection: "media", where: all });
+  await payload.delete({ collection: "products", where: all, context });
+  await payload.delete({ collection: "product-lines", where: all, context });
+  await payload.delete({ collection: "media", where: all, context });
 
   payload.logger.info("Seed: створення лінійок…");
   const lineIdByName = new Map<string, number>();
   for (const line of LINES) {
-    const created = await payload.create({ collection: "product-lines", data: line });
+    const created = await payload.create({ collection: "product-lines", data: line, context });
     lineIdByName.set(line.name, created.id);
   }
 
@@ -61,6 +63,7 @@ const seed = async () => {
       collection: "media",
       data: { alt: `${product.line} ${product.title}` },
       file: { data, mimetype: "image/webp", name: `${product.slug}.webp`, size: data.length },
+      context,
     });
 
     const lineId = lineIdByName.get(product.line);
@@ -77,6 +80,7 @@ const seed = async () => {
         volume: product.volume,
         _status: "published",
       },
+      context,
     });
   }
 

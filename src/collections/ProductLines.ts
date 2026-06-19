@@ -1,5 +1,9 @@
 import type { CollectionConfig } from "payload";
 import { slugField } from "@/fields/slug";
+import {
+  revalidateCatalogAfterChange,
+  revalidateCatalogAfterDelete,
+} from "@/collections/hooks/revalidateCatalog";
 
 /** Лінійки товарів (Lamellar Veil EX, Lamellar Mode …) — основа групування каталогу. */
 export const ProductLines: CollectionConfig = {
@@ -14,6 +18,10 @@ export const ProductLines: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [revalidateCatalogAfterChange],
+    afterDelete: [revalidateCatalogAfterDelete],
   },
   fields: [
     {

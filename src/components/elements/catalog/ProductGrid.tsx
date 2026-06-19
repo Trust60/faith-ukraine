@@ -7,6 +7,9 @@ type TProductGridProps = {
   className?: string;
 };
 
+// Картки першого екрана — їх фото вантажимо пріоритетно (LCP), решта lazy за замовчуванням.
+const PRIORITY_COUNT = 8;
+
 /** Адаптивна сітка карток товарів: 2 колонки на мобільному, 4 — на десктопі. */
 export function ProductGrid({ products, className }: TProductGridProps) {
   return (
@@ -16,9 +19,9 @@ export function ProductGrid({ products, className }: TProductGridProps) {
         className,
       )}
     >
-      {products.map((product) => (
+      {products.map((product, index) => (
         <li key={product.id}>
-          <ProductCard product={product} />
+          <ProductCard product={product} priority={index < PRIORITY_COUNT} />
         </li>
       ))}
     </ul>

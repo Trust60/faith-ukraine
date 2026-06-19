@@ -7,10 +7,9 @@ export const metadata: Metadata = {
   description: "Каталог професійної японської косметики FAITH.",
 };
 
-// Каталог віддзеркалює живі дані з адмінки → рендеримо на сервері на кожен запит
-// (без prerender під час build). Кешування/ISR можна додати пізніше з ревалідацією.
-export const dynamic = "force-dynamic";
-
+// Дані каталогу кешуються в getCatalogProducts (unstable_cache, тег "catalog") і
+// інвалідовуються з адмінки через revalidateTag (хук revalidateCatalog) — сторінка
+// віддається з кешу (ISR), без запиту до БД на кожен перегляд.
 export default async function CatalogPage() {
   const products = await getCatalogProducts();
 
