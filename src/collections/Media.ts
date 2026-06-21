@@ -3,6 +3,7 @@ import {
   revalidateCatalogAfterChange,
   revalidateCatalogAfterDelete,
 } from "@/collections/hooks/revalidateCatalog";
+import { buildStorageFileURL } from "@/utils/storage";
 
 /**
  * Зображення товарів у Supabase Storage. Кожне зображення (оригінал + розміри
@@ -28,6 +29,11 @@ export const Media: CollectionConfig = {
     singular: "Зображення",
     plural: "Зображення",
   },
+  admin: {
+    // Підпис зображення — за alt (людський опис), а не за іменем файлу. Цей підпис
+    // видно поряд із мініатюрою в колонці «Фото» каталогу, у медіатеці та в пікерах.
+    useAsTitle: "alt",
+  },
   access: {
     read: () => true,
   },
@@ -39,7 +45,21 @@ export const Media: CollectionConfig = {
   upload: {
     mimeTypes: ["image/*"],
     focalPoint: true,
-    adminThumbnail: "thumbnail",
+    // adminThumbnail задаємо функцією, а не рядком "thumbnail". Інакше Payload
+    // будує `thumbnailURL` як локальний /api/media/file/... — а цей маршрут
+    // вимкнено через `disablePayloadAccessControl: true`, тож превʼю в адмінці
+    // (список, картка, поле upload) ламалося на іконку файлу. Повертаємо прямий
+    // публічний URL мініатюри в Supabase. У dev без S3 — null, і Payload бере
+    // локальний шлях розміру сам.
+    adminThumbnail: ({ doc }) => {
+      const sizes = doc.sizes as
+        | { thumbnail?: { filename?: string | null } }
+        | undefined;
+      return buildStorageFileURL(
+        sizes?.thumbnail?.filename,
+        doc.prefix as string | null | undefined,
+      );
+    },
     imageSizes: [
       // height не задаємо: sharp зберігає пропорції й рахує висоту сам. Якщо задати
       // і width, і height — sharp ріже фото по центру (fit: "cover"), і повний

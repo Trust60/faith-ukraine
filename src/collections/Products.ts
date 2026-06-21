@@ -17,7 +17,10 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "line", "order", "_status"],
+    // `image` — це upload-поле: у списку Payload рендерить мініатюру товару
+    // (як в адмінці WordPress), щоб товар можна було впізнати не лише за текстом.
+    // Ставимо її першою — перша колонка стає клікабельним посиланням на товар.
+    defaultColumns: ["image", "title", "line", "order", "_status"],
   },
   access: {
     read: () => true,
@@ -35,6 +38,10 @@ export const Products: CollectionConfig = {
       type: "text",
       label: "Назва",
       required: true,
+      admin: {
+        description:
+          "Тільки власна назва товару, без лінійки (напр. «Energizing Pack», а не «Lamellar Mode Energizing Pack»). Лінійка показується окремим рядком над назвою.",
+      },
     },
     slugField(),
     {

@@ -211,6 +211,9 @@ export interface ProductLine {
  */
 export interface Product {
   id: number;
+  /**
+   * Тільки власна назва товару, без лінійки (напр. «Energizing Pack», а не «Lamellar Mode Energizing Pack»). Лінійка показується окремим рядком над назвою.
+   */
   title: string;
   /**
    * Частина URL. Лишіть порожнім — заповниться автоматично з назви.

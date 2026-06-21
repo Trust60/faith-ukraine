@@ -12,6 +12,7 @@ import { Users } from "@/collections/Users";
 import { Media } from "@/collections/Media";
 import { ProductLines } from "@/collections/ProductLines";
 import { Products } from "@/collections/Products";
+import { buildStorageFileURL } from "@/utils/storage";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -55,7 +56,7 @@ export default buildConfig({
           // access-control Payload, за публічним URL замість приватного S3-ендпоінта.
           disablePayloadAccessControl: true,
           generateFileURL: ({ filename, prefix }) =>
-            `${process.env.S3_PUBLIC_URL}/${prefix ? `${prefix}/${filename}` : filename}`,
+            buildStorageFileURL(filename, prefix) ?? filename,
         },
       },
       bucket: process.env.S3_BUCKET || "",

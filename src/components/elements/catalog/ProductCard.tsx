@@ -12,17 +12,23 @@ type TProductCardProps = {
 };
 
 /**
- * Картка товару каталогу: фото + назва. Чисто по макету — без ціни та кнопки «в кошик»
- * (на сайті немає оплати/покупки). Поки фото вантажиться — сіре тло (bg-muted), яке
- * прибирається після завантаження; картинка плавно проявляється (fade-in по opacity).
+ * Картка товару каталогу: фото + назва у два рядки (лінійка зверху, власна назва товару
+ * знизу — за макетом). Без ціни та кнопки «в кошик» (на сайті немає оплати/покупки).
+ * Поки фото вантажиться — сіре тло (bg-muted), яке прибирається після завантаження;
+ * картинка плавно проявляється (fade-in по opacity).
  * priority — для карток першого екрана (LCP): вони пріоритетні й показуються одразу, без fade.
+ *
+ * На десктопі (lg+, лише пристрої з наведенням) при ховері за карткою проявляється
+ * біла «панель» з м'якою тінню — псевдоелемент ::before з від'ємним inset (даёт «повітря»
+ * навколо контенту без зсуву лейауту). Анімуємо лише opacity → GPU-композит; box-shadow
+ * статична (її анімація викликала б repaint).
  */
 export function ProductCard({
   product,
   priority = false,
   className,
 }: TProductCardProps) {
-  const { image, title } = product;
+  const { image, title, lineName } = product;
   const imageRef = useRef<HTMLImageElement>(null);
   const [isLoaded, setIsLoaded] = useState(priority);
 
@@ -32,7 +38,13 @@ export function ProductCard({
   }, []);
 
   return (
-    <article className={cn("flex flex-col text-center", className)}>
+    <article
+      className={cn(
+        "relative isolate flex flex-col text-center",
+        "before:pointer-events-none before:absolute before:-inset-5 before:-z-10 before:bg-background before:opacity-0 before:shadow-card before:transition-opacity before:duration-300 before:content-[''] motion-reduce:before:transition-none lg:hover:before:opacity-100",
+        className,
+      )}
+    >
       <div
         className={cn(
           "relative mb-4 aspect-[3/4] w-full overflow-hidden",
@@ -54,7 +66,11 @@ export function ProductCard({
           )}
         />
       </div>
-      <h2 className="mt-1 text-sm text-ink-soft md:text-base">{title}</h2>
+      {/* Один заголовок (повна назва для скрінрідера), візуально — два рядки. */}
+      <h2 className="mt-1 text-base leading-snug text-ink-soft md:text-lg">
+        <span className="block">{lineName}</span>
+        <span className="block">{title}</span>
+      </h2>
     </article>
   );
 }
