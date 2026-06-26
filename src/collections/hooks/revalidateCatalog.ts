@@ -4,7 +4,7 @@ import type {
   CollectionAfterDeleteHook,
   PayloadRequest,
 } from "payload";
-import { CATALOG_CACHE_TAG } from "@/data/catalog";
+import { CATALOG_CACHE_TAG } from "@/data/cache-tags";
 
 /**
  * Інвалідує кеш каталогу (unstable_cache, тег CATALOG_CACHE_TAG) після зміни/видалення

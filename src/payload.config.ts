@@ -10,6 +10,7 @@ import sharp from "sharp";
 
 import { Users } from "@/collections/Users";
 import { Media } from "@/collections/Media";
+import { Partners } from "@/collections/Partners";
 import { ProductLines } from "@/collections/ProductLines";
 import { Products } from "@/collections/Products";
 import { buildStorageFileURL } from "@/utils/storage";
@@ -30,7 +31,7 @@ export default buildConfig({
     supportedLanguages: { uk },
     fallbackLanguage: "uk",
   },
-  collections: [Users, Media, ProductLines, Products],
+  collections: [Users, Media, ProductLines, Products, Partners],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -51,9 +52,16 @@ export default buildConfig({
     s3Storage({
       enabled: Boolean(process.env.S3_BUCKET),
       collections: {
+        // Бакет публічний → віддаємо файли прямо з Supabase CDN, повз
+        // access-control Payload, за публічним URL замість приватного S3-ендпоінта.
         media: {
-          // Бакет публічний → віддаємо файли прямо з Supabase CDN, повз
-          // access-control Payload, за публічним URL замість приватного S3-ендпоінта.
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) =>
+            buildStorageFileURL(filename, prefix) ?? filename,
+        },
+        // Логотипи партнерів — окрема папка `partners/` у тому ж бакеті (prefix ставить
+        // хук колекції). Ті самі публічні URL, що й у media.
+        partners: {
           disablePayloadAccessControl: true,
           generateFileURL: ({ filename, prefix }) =>
             buildStorageFileURL(filename, prefix) ?? filename,

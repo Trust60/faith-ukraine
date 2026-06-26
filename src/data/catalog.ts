@@ -1,9 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { getPayloadClient } from "@/lib/getPayload";
+import { CATALOG_CACHE_TAG } from "@/data/cache-tags";
 import type { Media, Product, ProductLine } from "@/payload-types";
-
-/** Тег кешу каталогу — інвалідовується з адмінки через revalidateTag (хук revalidateCatalog). */
-export const CATALOG_CACHE_TAG = "catalog";
 
 export type TCatalogProduct = {
   id: number;
