@@ -40,6 +40,14 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || "",
+      // Serverless + пулер Supabase: тримаємо мінімум зʼєднань на інстанс.
+      // На білді Next спавнить ~12 воркерів пререндеру, і кожен піднімає власний
+      // пул — з великим max вони миттєво вичерпують ліміт пулера (EMAXCONNSESSION,
+      // pool_size session-mode). Одного зʼєднання достатньо: Vercel-функція обробляє
+      // запит за раз, а Payload Local API в SSR/пререндері виконує запити послідовно.
+      max: 1,
+      // Не тримаємо ідл-зʼєднання — швидко повертаємо слот пулеру.
+      idleTimeoutMillis: 10_000,
     },
     // Міграції тримаємо в src/ (увесь код проєкту — там). У dev адаптер за
     // замовчуванням пушить схему напряму (push), у production push вимкнено —
