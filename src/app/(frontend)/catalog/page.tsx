@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getCatalogProducts } from "@/data/catalog";
-import { ProductGrid } from "@/components/elements/catalog/ProductGrid";
+import { CatalogList } from "@/components/elements/catalog/CatalogList";
 
 export const metadata: Metadata = {
   title: "Каталог — FAITH",
@@ -14,7 +14,7 @@ export default async function CatalogPage() {
   const products = await getCatalogProducts();
 
   return (
-    <section className="mx-auto max-w-[1600px] px-4 py-10 md:px-8 md:py-14">
+    <section className="mx-auto max-w-[1200px] px-4 py-10 md:px-8 md:py-14">
       <h1 className="text-center font-display text-3xl uppercase tracking-[0.02em] text-heading md:text-4xl">
         Каталог
       </h1>
@@ -22,7 +22,7 @@ export default async function CatalogPage() {
       {products.length === 0 ? (
         <p className="mt-10 text-center text-nav">Товари скоро з’являться.</p>
       ) : (
-        <ProductGrid products={products} className="mt-12 md:mt-16" />
+        <CatalogList products={products} className="mt-12 md:mt-16" />
       )}
     </section>
   );

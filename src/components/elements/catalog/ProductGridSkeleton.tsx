@@ -6,7 +6,7 @@ type TProductGridSkeletonProps = {
   className?: string;
 };
 
-/** Скелетон сітки каталогу — та сама сітка/геометрія, що й ProductGrid (без CLS). */
+/** Скелетон сітки каталогу — та сама сітка/геометрія, що й CatalogList (без CLS). */
 export function ProductGridSkeleton({
   count = 8,
   className,
@@ -14,7 +14,7 @@ export function ProductGridSkeleton({
   return (
     <ul
       className={cn(
-        "grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16",
+        "grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-12",
         className,
       )}
       aria-hidden="true"

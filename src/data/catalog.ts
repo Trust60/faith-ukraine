@@ -24,8 +24,12 @@ const orderOf = (value?: number | null) => value ?? 0;
 const isPopulated = (product: TCatalogDoc): product is TPopulatedProduct =>
   typeof product.line === "object" && typeof product.image === "object";
 
+// Порядок каталогу: 1) порядок лінійки (line.order) → 2) id лінійки — щоб лінійки з
+// однаковим order не перемішувались і товари однієї лінійки завжди йшли підряд →
+// 3) порядок товару всередині лінійки → 4) назва (стабільний фолбек).
 const byLineThenOrder = (a: TPopulatedProduct, b: TPopulatedProduct) =>
   orderOf(a.line.order) - orderOf(b.line.order) ||
+  a.line.id - b.line.id ||
   orderOf(a.order) - orderOf(b.order) ||
   a.title.localeCompare(b.title);
 

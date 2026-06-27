@@ -218,7 +218,7 @@ export interface Product {
    */
   title: string;
   /**
-   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   * Частина URL товару. Лишіть порожнім — згенерується з лінійки + назви (напр. «lamellar-mode-cleansing»).
    */
   slug: string;
   line: number | ProductLine;

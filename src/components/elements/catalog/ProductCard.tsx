@@ -57,7 +57,7 @@ export function ProductCard({
           alt={image.alt}
           width={image.width}
           height={image.height}
-          sizes="(min-width: 1024px) 25vw, 50vw"
+          sizes="(min-width: 1280px) 300px, (min-width: 1024px) 25vw, 50vw"
           priority={priority}
           onLoad={() => setIsLoaded(true)}
           className={cn(
