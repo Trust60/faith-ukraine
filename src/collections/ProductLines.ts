@@ -15,6 +15,7 @@ export const ProductLines: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "order"],
+    group: "Каталог",
   },
   access: {
     read: () => true,

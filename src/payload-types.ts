@@ -70,6 +70,10 @@ export interface Config {
     users: User;
     media: Media;
     'product-lines': ProductLine;
+    'product-categories': ProductCategory;
+    'product-types': ProductType;
+    concerns: Concern;
+    'skin-types': SkinType;
     products: Product;
     partners: Partner;
     'payload-kv': PayloadKv;
@@ -82,6 +86,10 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'product-lines': ProductLinesSelect<false> | ProductLinesSelect<true>;
+    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
+    'product-types': ProductTypesSelect<false> | ProductTypesSelect<true>;
+    concerns: ConcernsSelect<false> | ConcernsSelect<true>;
+    'skin-types': SkinTypesSelect<false> | SkinTypesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -209,6 +217,90 @@ export interface ProductLine {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: number;
+  /**
+   * Зона догляду: «Обличчя», «Тіло», «Волосся», «Макіяж/база».
+   */
+  name: string;
+  /**
+   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   */
+  slug: string;
+  /**
+   * Порядок у списку фільтра (менше число — вище).
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-types".
+ */
+export interface ProductType {
+  id: number;
+  /**
+   * Формат: «Очищення», «Тонік/Лосьйон», «Есенція/Сироватка», «Гель/Крем», «Маска/Пак».
+   */
+  name: string;
+  /**
+   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   */
+  slug: string;
+  /**
+   * Порядок у списку фільтра (менше число — вище).
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concerns".
+ */
+export interface Concern {
+  id: number;
+  /**
+   * Ефект/проблема: «Зволоження», «Анти-ейдж», «Заспокоєння», «Сонцезахист».
+   */
+  name: string;
+  /**
+   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   */
+  slug: string;
+  /**
+   * Порядок у списку фільтра (менше число — вище).
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skin-types".
+ */
+export interface SkinType {
+  id: number;
+  /**
+   * Для якого типу шкіри: «Суха», «Жирна», «Комбінована», «Чутлива», «Зріла», «Проблемна».
+   */
+  name: string;
+  /**
+   * Частина URL. Лишіть порожнім — заповниться автоматично з назви.
+   */
+  slug: string;
+  /**
+   * Порядок у списку фільтра (менше число — вище).
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
@@ -222,15 +314,51 @@ export interface Product {
    */
   slug: string;
   line: number | ProductLine;
+  /**
+   * Зона догляду: обличчя, тіло, волосся, макіяж/база.
+   */
+  category: number | ProductCategory;
+  type: number | ProductType;
+  concerns?: (number | Concern)[] | null;
+  /**
+   * Для якого типу шкіри. Лишіть порожнім, якщо засіб універсальний (підходить будь-якій).
+   */
+  skinTypes?: (number | SkinType)[] | null;
   image: number | Media;
   /**
    * Порядок усередині лінійки (менше число — вище).
    */
   order?: number | null;
   /**
-   * Напр. «150 ml». На картці каталогу не показується.
+   * Напр. «50 ml», «280 г».
    */
   volume?: string | null;
+  /**
+   * Один рядок суті під назвою (напр. «ламелярна есенція з колагеном»). Показується і на картці каталогу.
+   */
+  shortDescription?: string | null;
+  keyIngredients?:
+    | {
+        name: string;
+        benefit?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  howToUse?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   description?: {
     root: {
       type: string;
@@ -330,6 +458,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'product-lines';
         value: number | ProductLine;
+      } | null)
+    | ({
+        relationTo: 'product-categories';
+        value: number | ProductCategory;
+      } | null)
+    | ({
+        relationTo: 'product-types';
+        value: number | ProductType;
+      } | null)
+    | ({
+        relationTo: 'concerns';
+        value: number | Concern;
+      } | null)
+    | ({
+        relationTo: 'skin-types';
+        value: number | SkinType;
       } | null)
     | ({
         relationTo: 'products';
@@ -459,15 +603,72 @@ export interface ProductLinesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories_select".
+ */
+export interface ProductCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-types_select".
+ */
+export interface ProductTypesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concerns_select".
+ */
+export interface ConcernsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skin-types_select".
+ */
+export interface SkinTypesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   line?: T;
+  category?: T;
+  type?: T;
+  concerns?: T;
+  skinTypes?: T;
   image?: T;
   order?: T;
   volume?: T;
+  shortDescription?: T;
+  keyIngredients?:
+    | T
+    | {
+        name?: T;
+        benefit?: T;
+        id?: T;
+      };
+  howToUse?: T;
   description?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -4,6 +4,8 @@ import {
   revalidateCatalogAfterChange,
   revalidateCatalogAfterDelete,
 } from "@/collections/hooks/revalidateCatalog";
+import { productTaxonomyFields } from "@/collections/fields/productTaxonomy";
+import { productContentFields } from "@/collections/fields/productContent";
 
 /**
  * Джерело slug товару — «<лінійка> <назва>» (напр. «lamellar-mode-cleansing»), щоб slug
@@ -39,10 +41,11 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
+    group: "Каталог",
     // `image` — це upload-поле: у списку Payload рендерить мініатюру товару
     // (як в адмінці WordPress), щоб товар можна було впізнати не лише за текстом.
     // Ставимо її першою — перша колонка стає клікабельним посиланням на товар.
-    defaultColumns: ["image", "title", "line", "order", "_status"],
+    defaultColumns: ["image", "title", "line", "type", "order", "_status"],
   },
   access: {
     read: () => true,
@@ -77,6 +80,7 @@ export const Products: CollectionConfig = {
       label: "Лінійка",
       required: true,
     },
+    ...productTaxonomyFields,
     {
       name: "image",
       type: "upload",
@@ -93,18 +97,6 @@ export const Products: CollectionConfig = {
         description: "Порядок усередині лінійки (менше число — вище).",
       },
     },
-    {
-      name: "volume",
-      type: "text",
-      label: "Об'єм",
-      admin: {
-        description: "Напр. «150 ml». На картці каталогу не показується.",
-      },
-    },
-    {
-      name: "description",
-      type: "richText",
-      label: "Опис",
-    },
+    ...productContentFields,
   ],
 };

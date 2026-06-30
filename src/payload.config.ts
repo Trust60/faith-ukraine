@@ -12,6 +12,10 @@ import { Users } from "@/collections/Users";
 import { Media } from "@/collections/Media";
 import { Partners } from "@/collections/Partners";
 import { ProductLines } from "@/collections/ProductLines";
+import { ProductCategories } from "@/collections/ProductCategories";
+import { ProductTypes } from "@/collections/ProductTypes";
+import { Concerns } from "@/collections/Concerns";
+import { SkinTypes } from "@/collections/SkinTypes";
 import { Products } from "@/collections/Products";
 import { buildStorageFileURL } from "@/utils/storage";
 
@@ -31,7 +35,17 @@ export default buildConfig({
     supportedLanguages: { uk },
     fallbackLanguage: "uk",
   },
-  collections: [Users, Media, ProductLines, Products, Partners],
+  collections: [
+    Users,
+    Media,
+    ProductLines,
+    ProductCategories,
+    ProductTypes,
+    Concerns,
+    SkinTypes,
+    Products,
+    Partners,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
