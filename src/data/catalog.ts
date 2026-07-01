@@ -1,7 +1,28 @@
 import { unstable_cache } from "next/cache";
 import { getPayloadClient } from "@/lib/getPayload";
 import { CATALOG_CACHE_TAG } from "@/data/cache-tags";
-import type { Media, Product, ProductLine } from "@/payload-types";
+import { buildFacets } from "@/data/catalog-facets";
+import type {
+  Concern,
+  Media,
+  Product,
+  ProductCategory,
+  ProductLine,
+  ProductType,
+  SkinType,
+} from "@/payload-types";
+
+/** Одна опція фільтра (термін таксономії): slug для зіставлення + назва для показу. */
+export type TFacetOption = { slug: string; name: string };
+
+/** Списки опцій кожної осі фільтра — лише терміни, що реально є в каталозі. */
+export type TCatalogFacets = {
+  categories: TFacetOption[];
+  lines: TFacetOption[];
+  types: TFacetOption[];
+  concerns: TFacetOption[];
+  skinTypes: TFacetOption[];
+};
 
 export type TCatalogProduct = {
   id: number;
@@ -13,16 +34,48 @@ export type TCatalogProduct = {
     width: number;
     height: number;
   };
+  // Осі фільтра — слаги для клієнтського зіставлення (див. utils/catalog-filter).
+  categorySlug: string;
+  lineSlug: string;
+  typeSlug: string;
+  concernSlugs: string[];
+  skinTypeSlugs: string[];
+  // Порядок типу продукту — для сортування «за кроком догляду».
+  stepOrder: number;
 };
 
-// Поля, які тягнемо з БД для картки каталогу (select). description/volume/slug не потрібні.
-type TCatalogDoc = Pick<Product, "id" | "title" | "order" | "line" | "image">;
-type TPopulatedProduct = TCatalogDoc & { line: ProductLine; image: Media };
+export type TCatalogData = {
+  products: TCatalogProduct[];
+  facets: TCatalogFacets;
+};
+
+// Поля, які тягнемо з БД: картка + осі таксономії для фільтрів. description/volume/slug не потрібні.
+type TCatalogDoc = Pick<
+  Product,
+  "id" | "title" | "order" | "line" | "image" | "category" | "type" | "concerns" | "skinTypes"
+>;
+type TPopulatedProduct = TCatalogDoc & {
+  line: ProductLine;
+  image: Media;
+  category: ProductCategory;
+  type: ProductType;
+};
 
 const orderOf = (value?: number | null) => value ?? 0;
 
+const isObject = (value: unknown): value is object =>
+  typeof value === "object" && value !== null;
+
+// Товар придатний для картки/фільтра лише якщо всі обов'язкові зв'язки підтягнуті (depth 1).
 const isPopulated = (product: TCatalogDoc): product is TPopulatedProduct =>
-  typeof product.line === "object" && typeof product.image === "object";
+  isObject(product.line) &&
+  isObject(product.image) &&
+  isObject(product.category) &&
+  isObject(product.type);
+
+// hasMany-зв'язки на depth 1 — масив об'єктів; лишаємо тільки підтягнуті (не голі id).
+const objectsOf = <T,>(list?: (number | T)[] | null): T[] =>
+  (list ?? []).filter((item): item is T => isObject(item));
 
 // Порядок каталогу: 1) порядок лінійки (line.order) → 2) id лінійки — щоб лінійки з
 // однаковим order не перемішувались і товари однієї лінійки завжди йшли підряд →
@@ -33,12 +86,8 @@ const byLineThenOrder = (a: TPopulatedProduct, b: TPopulatedProduct) =>
   orderOf(a.order) - orderOf(b.order) ||
   a.title.localeCompare(b.title);
 
-function toCatalogProduct({
-  id,
-  title,
-  line,
-  image,
-}: TPopulatedProduct): TCatalogProduct {
+function toCatalogProduct(product: TPopulatedProduct): TCatalogProduct {
+  const { id, title, line, image, category, type } = product;
   const card = image.sizes?.card;
   return {
     id,
@@ -50,10 +99,16 @@ function toCatalogProduct({
       width: card?.width ?? image.width ?? 768,
       height: card?.height ?? image.height ?? 1024,
     },
+    categorySlug: category.slug,
+    lineSlug: line.slug,
+    typeSlug: type.slug,
+    concernSlugs: objectsOf<Concern>(product.concerns).map((c) => c.slug),
+    skinTypeSlugs: objectsOf<SkinType>(product.skinTypes).map((s) => s.slug),
+    stepOrder: orderOf(type.order),
   };
 }
 
-async function loadCatalogProducts(): Promise<TCatalogProduct[]> {
+async function loadCatalogData(): Promise<TCatalogData> {
   const payload = await getPayloadClient();
 
   const { docs } = await payload.find({
@@ -61,23 +116,42 @@ async function loadCatalogProducts(): Promise<TCatalogProduct[]> {
     depth: 1,
     limit: 100,
     where: { _status: { equals: "published" } },
-    // Тягнемо лише поля картки — менше навантаження на БД і менший обсяг серіалізації.
-    select: { title: true, line: true, image: true, order: true },
+    // Лише поля картки та осей фільтра — менше навантаження на БД і серіалізацію.
+    select: {
+      title: true,
+      line: true,
+      image: true,
+      order: true,
+      category: true,
+      type: true,
+      concerns: true,
+      skinTypes: true,
+    },
   });
 
-  return docs.filter(isPopulated).sort(byLineThenOrder).map(toCatalogProduct);
+  const populated = docs.filter(isPopulated).sort(byLineThenOrder);
+
+  return {
+    products: populated.map(toCatalogProduct),
+    facets: buildFacets(
+      populated.map((p) => ({
+        line: p.line,
+        category: p.category,
+        type: p.type,
+        concerns: objectsOf<Concern>(p.concerns),
+        skinTypes: objectsOf<SkinType>(p.skinTypes),
+      })),
+    ),
+  };
 }
 
 /**
- * Опубліковані товари каталогу, відсортовані за (порядок лінійки, порядок товару, назва) —
- * товари однієї лінійки йдуть підряд (групування без заголовків, по макету).
- *
- * Кешуються (unstable_cache, тег CATALOG_CACHE_TAG): каталог віддається з кешу (ISR), без
- * запиту до БД на кожен перегляд; правки в адмінці інвалідовують кеш через revalidateTag
- * (хук revalidateCatalog). revalidate — страхувальний TTL, якщо інвалідація не спрацює.
+ * Товари каталогу (у порядку «лінійка → порядок товару») разом зі списками опцій
+ * фільтрів. Кешуються (unstable_cache, тег CATALOG_CACHE_TAG): каталог віддається з
+ * кешу (ISR), без запиту до БД на кожен перегляд; правки в адмінці інвалідовують кеш
+ * через revalidateTag (хук revalidateCatalog). revalidate — страхувальний TTL.
  */
-export const getCatalogProducts = unstable_cache(
-  loadCatalogProducts,
-  ["catalog-products"],
-  { tags: [CATALOG_CACHE_TAG], revalidate: 3600 },
-);
+export const getCatalogData = unstable_cache(loadCatalogData, ["catalog-data"], {
+  tags: [CATALOG_CACHE_TAG],
+  revalidate: 3600,
+});

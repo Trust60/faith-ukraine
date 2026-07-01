@@ -1,56 +1,70 @@
 "use client";
 
-import { useState } from "react";
 import { OutlineButton } from "@/ui/OutlineButton";
 import { CatalogItem } from "./CatalogItem";
-import type { TCatalogProduct } from "@/data/catalog";
+import type { TCatalogItem } from "@/utils/catalog-filter";
 
 type TCatalogListProps = {
-  products: TCatalogProduct[];
-  className?: string;
+  items: TCatalogItem[];
+  /** id товарів першого екрана — показуються миттєво (priority-фото, без reveal). */
+  eagerIds: Set<number>;
+  matchCount: number;
+  visibleCount: number;
+  hasMore: boolean;
+  onShowMore: () => void;
+  onClearAll: () => void;
 };
 
-// Перша пачка та крок докладання («Показати ще»). Кратно 4 — рівні ряди на десктопі (4 колонки).
-const INITIAL_VISIBLE = 16;
-const LOAD_STEP = 16;
-// Фото першого екрана вантажимо пріоритетно (LCP), решта — lazy (next/image).
-const PRIORITY_COUNT = 8;
-
 /**
- * Сітка каталогу з кнопкою «Показати ще». Усі товари рендеряться в HTML (для SEO —
- * краулер бачить усі посилання за один обхід), але поза першою пачкою приховані через
- * CSS: місця не займають, тож футер одразу доступний. Кнопка лише знімає приховування,
- * без запиту до сервера — розкриття миттєве. Картки плавно проявляються (reveal).
+ * Сітка каталогу. Усі товари завжди в HTML (для SEO — краулер бачить усі посилання);
+ * ті, що не проходять фільтр або поза поточною пачкою, приховані через CSS (display:none —
+ * не займають клітинку, тож пропусків у сітці немає за будь-яких фільтрів/сортування).
+ * Кнопка «Показати ще» лише збільшує пачку — без запиту до сервера. Коли нічого не
+ * знайдено — показуємо порожній стан із можливістю скинути фільтри.
  */
-export function CatalogList({ products, className }: TCatalogListProps) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-  const hasMore = visibleCount < products.length;
-
+export function CatalogList({
+  items,
+  eagerIds,
+  matchCount,
+  visibleCount,
+  hasMore,
+  onShowMore,
+  onClearAll,
+}: TCatalogListProps) {
   return (
-    <div className={className}>
-      {/* Без JS показуємо всі товари й ховаємо неробочу кнопку (прогресивне покращення). */}
+    <div>
+      {/* Без JS показуємо всі товари й ховаємо неробочі кнопки (прогресивне покращення). */}
       <noscript>
         <style>{`.catalog-collapsed{display:block!important}.catalog-show-more{display:none!important}`}</style>
       </noscript>
 
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-12">
-        {products.map((product, index) => (
+      {matchCount === 0 && (
+        <div className="py-16 text-center">
+          <p className="text-nav">За обраними фільтрами товарів не знайдено.</p>
+          <button
+            type="button"
+            onClick={onClearAll}
+            className="mt-3 text-base text-ink-soft underline underline-offset-4 transition-colors hover:text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            Скинути фільтри
+          </button>
+        </div>
+      )}
+
+      <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12 xl:grid-cols-4">
+        {items.map((item) => (
           <CatalogItem
-            key={product.id}
-            product={product}
-            priority={index < PRIORITY_COUNT}
-            collapsed={index >= visibleCount}
+            key={item.product.id}
+            product={item.product}
+            eager={eagerIds.has(item.product.id)}
+            collapsed={!item.matches || item.matchIndex >= visibleCount}
           />
         ))}
       </ul>
 
       {hasMore && (
         <div className="catalog-show-more mt-12 flex justify-center md:mt-16">
-          <OutlineButton
-            onClick={() => setVisibleCount((count) => count + LOAD_STEP)}
-          >
-            Показати ще
-          </OutlineButton>
+          <OutlineButton onClick={onShowMore}>Показати ще</OutlineButton>
         </div>
       )}
     </div>

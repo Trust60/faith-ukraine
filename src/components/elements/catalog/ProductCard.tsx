@@ -41,7 +41,10 @@ export function ProductCard({
     <article
       className={cn(
         "relative isolate flex flex-col text-center",
-        "before:pointer-events-none before:absolute before:-inset-5 before:-z-10 before:bg-background before:opacity-0 before:shadow-card before:transition-opacity before:duration-300 before:content-[''] motion-reduce:before:transition-none lg:hover:before:opacity-100",
+        // Ховер-панель — лише десктоп (lg+). Псевдоелемент рендеримо тільки з lg, бо його
+        // від'ємний inset (-inset-5) на мобільному вилазив за правий край → горизонтальний скрол;
+        // на lg+ ширші відступи сторінки цей запас поглинають.
+        "lg:before:pointer-events-none lg:before:absolute lg:before:-inset-5 lg:before:-z-10 lg:before:bg-background lg:before:opacity-0 lg:before:shadow-card lg:before:transition-opacity lg:before:duration-300 lg:before:content-[''] lg:hover:before:opacity-100 lg:motion-reduce:before:transition-none",
         className,
       )}
     >
