@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 import type { TCatalogProduct } from "@/data/catalog";
@@ -28,7 +29,7 @@ export function ProductCard({
   priority = false,
   className,
 }: TProductCardProps) {
-  const { image, title, lineName } = product;
+  const { image, title, lineName, slug } = product;
   const imageRef = useRef<HTMLImageElement>(null);
   const [isLoaded, setIsLoaded] = useState(priority);
 
@@ -69,10 +70,17 @@ export function ProductCard({
           )}
         />
       </div>
-      {/* Один заголовок (повна назва для скрінрідера), візуально — два рядки. */}
+      {/* Один заголовок (повна назва для скрінрідера), візуально — два рядки.
+          Посилання-оверлей: after:inset-0 розтягує клікабельну зону на всю картку
+          (позиціюється відносно article), а для скрінрідера це просто «назва, посилання». */}
       <h2 className="mt-1 text-base leading-snug text-ink-soft md:text-lg">
-        <span className="block">{lineName}</span>
-        <span className="block">{title}</span>
+        <Link
+          href={`/catalog/${slug}`}
+          className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          <span className="block">{lineName}</span>
+          <span className="block">{title}</span>
+        </Link>
       </h2>
     </article>
   );

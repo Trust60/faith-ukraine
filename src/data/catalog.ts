@@ -27,6 +27,8 @@ export type TCatalogFacets = {
 export type TCatalogProduct = {
   id: number;
   title: string;
+  // Слаг сторінки товару (/catalog/[slug]) — картка каталогу є посиланням.
+  slug: string;
   lineName: string;
   image: {
     url: string;
@@ -49,10 +51,20 @@ export type TCatalogData = {
   facets: TCatalogFacets;
 };
 
-// Поля, які тягнемо з БД: картка + осі таксономії для фільтрів. description/volume/slug не потрібні.
+// Поля, які тягнемо з БД: картка (+slug для посилання) + осі таксономії для фільтрів.
+// Повний контент (description/volume/…) не потрібен — його тягне сторінка товару (data/product).
 type TCatalogDoc = Pick<
   Product,
-  "id" | "title" | "order" | "line" | "image" | "category" | "type" | "concerns" | "skinTypes"
+  | "id"
+  | "title"
+  | "slug"
+  | "order"
+  | "line"
+  | "image"
+  | "category"
+  | "type"
+  | "concerns"
+  | "skinTypes"
 >;
 type TPopulatedProduct = TCatalogDoc & {
   line: ProductLine;
@@ -63,7 +75,8 @@ type TPopulatedProduct = TCatalogDoc & {
 
 const orderOf = (value?: number | null) => value ?? 0;
 
-const isObject = (value: unknown): value is object =>
+// Перевірки підтягнутих зв'язків Payload (depth 1) — переиспользуются в data/product.
+export const isObject = (value: unknown): value is object =>
   typeof value === "object" && value !== null;
 
 // Товар придатний для картки/фільтра лише якщо всі обов'язкові зв'язки підтягнуті (depth 1).
@@ -74,7 +87,7 @@ const isPopulated = (product: TCatalogDoc): product is TPopulatedProduct =>
   isObject(product.type);
 
 // hasMany-зв'язки на depth 1 — масив об'єктів; лишаємо тільки підтягнуті (не голі id).
-const objectsOf = <T,>(list?: (number | T)[] | null): T[] =>
+export const objectsOf = <T,>(list?: (number | T)[] | null): T[] =>
   (list ?? []).filter((item): item is T => isObject(item));
 
 // Порядок каталогу: 1) порядок лінійки (line.order) → 2) id лінійки — щоб лінійки з
@@ -87,11 +100,12 @@ const byLineThenOrder = (a: TPopulatedProduct, b: TPopulatedProduct) =>
   a.title.localeCompare(b.title);
 
 function toCatalogProduct(product: TPopulatedProduct): TCatalogProduct {
-  const { id, title, line, image, category, type } = product;
+  const { id, title, slug, line, image, category, type } = product;
   const card = image.sizes?.card;
   return {
     id,
     title,
+    slug,
     lineName: line.name,
     image: {
       url: card?.url ?? image.url ?? "",
@@ -119,6 +133,7 @@ async function loadCatalogData(): Promise<TCatalogData> {
     // Лише поля картки та осей фільтра — менше навантаження на БД і серіалізацію.
     select: {
       title: true,
+      slug: true,
       line: true,
       image: true,
       order: true,
