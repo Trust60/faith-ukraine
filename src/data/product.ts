@@ -30,6 +30,8 @@ export type TProductDetail = {
   keyIngredients: { name: string; benefit: string | null }[];
   description: Product["description"];
   howToUse: Product["howToUse"];
+  /** Повний склад (INCI) англійською — суцільний текст. */
+  ingredients: string | null;
   image: {
     alt: string;
     base: TProductImageVariant;
@@ -101,6 +103,7 @@ function toProductDetail(product: TPopulatedProduct): TProductDetail {
     })),
     description: product.description ?? null,
     howToUse: product.howToUse ?? null,
+    ingredients: product.ingredients ?? null,
     image: toImageVariants(product.image),
     lineSlug: product.line.slug,
     categorySlug: product.category.slug,

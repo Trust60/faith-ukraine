@@ -374,6 +374,10 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Повний склад англійською, суцільним текстом через кому.
+   */
+  ingredients?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -670,6 +674,7 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   howToUse?: T;
   description?: T;
+  ingredients?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

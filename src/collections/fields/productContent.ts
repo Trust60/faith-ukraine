@@ -24,8 +24,8 @@ export const productContentFields: Field[] = [
   {
     name: "keyIngredients",
     type: "array",
-    label: "Ключові інгредієнти",
-    labels: { singular: "Інгредієнт", plural: "Інгредієнти" },
+    label: "Активні компоненти",
+    labels: { singular: "Компонент", plural: "Компоненти" },
     fields: [
       { name: "name", type: "text", label: "Назва", required: true },
       { name: "benefit", type: "text", label: "Дія / користь" },
@@ -40,5 +40,13 @@ export const productContentFields: Field[] = [
     name: "description",
     type: "richText",
     label: "Опис",
+  },
+  {
+    name: "ingredients",
+    type: "textarea",
+    label: "Ingredients (INCI)",
+    admin: {
+      description: "Повний склад англійською, суцільним текстом через кому.",
+    },
   },
 ];

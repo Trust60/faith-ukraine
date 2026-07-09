@@ -9,6 +9,7 @@ import { ProductImageZoom } from "@/components/elements/product/ProductImageZoom
 import { ProductSummary } from "@/components/elements/product/ProductSummary";
 import { ProductRichTextSection } from "@/components/elements/product/ProductRichTextSection";
 import { ProductIngredients } from "@/components/elements/product/ProductIngredients";
+import { ProductInci } from "@/components/elements/product/ProductInci";
 import { RelatedProducts } from "@/components/elements/product/RelatedProducts";
 import { ProductJsonLd } from "@/components/elements/product/ProductJsonLd";
 import type { Metadata } from "next";
@@ -96,6 +97,10 @@ export default async function ProductPage({ params }: PageProps<"/catalog/[slug]
           data={product.howToUse}
           className="mt-14 md:mt-20"
         />
+      )}
+
+      {product.ingredients && (
+        <ProductInci text={product.ingredients} className="mt-14 md:mt-20" />
       )}
 
       {related.length > 0 && (
