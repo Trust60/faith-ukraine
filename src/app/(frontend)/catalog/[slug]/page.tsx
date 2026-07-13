@@ -8,7 +8,7 @@ import { hasRichText } from "@/utils/rich-text";
 import { ProductImageZoom } from "@/components/elements/product/ProductImageZoom";
 import { ProductSummary } from "@/components/elements/product/ProductSummary";
 import { ProductRichTextSection } from "@/components/elements/product/ProductRichTextSection";
-import { ProductIngredients } from "@/components/elements/product/ProductIngredients";
+import { ProductActiveComponents } from "@/components/elements/product/ProductActiveComponents";
 import { ProductInci } from "@/components/elements/product/ProductInci";
 import { RelatedProducts } from "@/components/elements/product/RelatedProducts";
 import { ProductJsonLd } from "@/components/elements/product/ProductJsonLd";
@@ -87,8 +87,11 @@ export default async function ProductPage({ params }: PageProps<"/catalog/[slug]
         />
       )}
 
-      {product.keyIngredients.length > 0 && (
-        <ProductIngredients items={product.keyIngredients} className="mt-14 md:mt-20" />
+      {product.activeComponents && (
+        <ProductActiveComponents
+          text={product.activeComponents}
+          className="mt-14 md:mt-20"
+        />
       )}
 
       {hasRichText(product.howToUse) && (

@@ -27,7 +27,8 @@ export type TProductDetail = {
   skinTypeNames: string[];
   /** «Призначення» — чипси на сторінці товару. */
   concerns: { name: string; slug: string }[];
-  keyIngredients: { name: string; benefit: string | null }[];
+  /** Активні компоненти — по одному на рядок у форматі «Назва – дія». */
+  activeComponents: string | null;
   description: Product["description"];
   howToUse: Product["howToUse"];
   /** Повний склад (INCI) англійською — суцільний текст. */
@@ -97,10 +98,7 @@ function toProductDetail(product: TPopulatedProduct): TProductDetail {
     categoryName: product.category.name,
     skinTypeNames: objectsOf<SkinType>(product.skinTypes).map((s) => s.name),
     concerns: concerns.map((c) => ({ name: c.name, slug: c.slug })),
-    keyIngredients: (product.keyIngredients ?? []).map((item) => ({
-      name: item.name,
-      benefit: item.benefit ?? null,
-    })),
+    activeComponents: product.activeComponents ?? null,
     description: product.description ?? null,
     howToUse: product.howToUse ?? null,
     ingredients: product.ingredients ?? null,

@@ -5,7 +5,10 @@ import {
   revalidateCatalogAfterDelete,
 } from "@/collections/hooks/revalidateCatalog";
 import { productTaxonomyFields } from "@/collections/fields/productTaxonomy";
-import { productContentFields } from "@/collections/fields/productContent";
+import {
+  productContentFields,
+  productSummaryFields,
+} from "@/collections/fields/productContent";
 
 /**
  * Джерело slug товару — «<лінійка> <назва>» (напр. «lamellar-mode-cleansing»), щоб slug
@@ -57,7 +60,23 @@ export const Products: CollectionConfig = {
     afterChange: [revalidateCatalogAfterChange],
     afterDelete: [revalidateCatalogAfterDelete],
   },
+  // Порядок полів — як на сторінці товару зверху вниз: фото, лінійка + назва,
+  // короткий опис і об'єм, класифікація, контент-секції; службовий «Порядок» — у кінці.
   fields: [
+    {
+      name: "image",
+      type: "upload",
+      relationTo: "media",
+      label: "Фото",
+      required: true,
+    },
+    {
+      name: "line",
+      type: "relationship",
+      relationTo: "product-lines",
+      label: "Лінійка",
+      required: true,
+    },
     {
       name: "title",
       type: "text",
@@ -73,21 +92,9 @@ export const Products: CollectionConfig = {
       description:
         "Частина URL товару. Лишіть порожнім — згенерується з лінійки + назви (напр. «lamellar-mode-cleansing»).",
     }),
-    {
-      name: "line",
-      type: "relationship",
-      relationTo: "product-lines",
-      label: "Лінійка",
-      required: true,
-    },
+    ...productSummaryFields,
     ...productTaxonomyFields,
-    {
-      name: "image",
-      type: "upload",
-      relationTo: "media",
-      label: "Фото",
-      required: true,
-    },
+    ...productContentFields,
     {
       name: "order",
       type: "number",
@@ -97,6 +104,5 @@ export const Products: CollectionConfig = {
         description: "Порядок усередині лінійки (менше число — вище).",
       },
     },
-    ...productContentFields,
   ],
 };

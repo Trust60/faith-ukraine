@@ -1,17 +1,10 @@
 import type { Field } from "payload";
 
 /**
- * Контентні поля товару. На картці каталогу показуємо лише дескриптор
- * (`shortDescription`); решта — наповнення повної сторінки товару. Об'єм лишаємо тут
- * як характеристику.
+ * Поля шапки товару (права колонка сторінки): дескриптор під назвою та об'єм.
+ * `shortDescription` показується і на картці каталогу.
  */
-export const productContentFields: Field[] = [
-  {
-    name: "volume",
-    type: "text",
-    label: "Об'єм",
-    admin: { description: "Напр. «50 ml», «280 г»." },
-  },
+export const productSummaryFields: Field[] = [
   {
     name: "shortDescription",
     type: "text",
@@ -22,24 +15,36 @@ export const productContentFields: Field[] = [
     },
   },
   {
-    name: "keyIngredients",
-    type: "array",
+    name: "volume",
+    type: "text",
+    label: "Об'єм",
+    admin: { description: "Напр. «50 ml», «280 г»." },
+  },
+];
+
+/**
+ * Контентні секції сторінки товару — в порядку відображення на фронті:
+ * «Опис» → «Активні компоненти» → «Спосіб застосування» → Ingredients (INCI).
+ */
+export const productContentFields: Field[] = [
+  {
+    name: "description",
+    type: "richText",
+    label: "Опис",
+  },
+  {
+    name: "activeComponents",
+    type: "textarea",
     label: "Активні компоненти",
-    labels: { singular: "Компонент", plural: "Компоненти" },
-    fields: [
-      { name: "name", type: "text", label: "Назва", required: true },
-      { name: "benefit", type: "text", label: "Дія / користь" },
-    ],
+    admin: {
+      description:
+        "По одному компоненту на рядок у форматі «Назва – дія». Маркери (•, -) не потрібні — список на сайті маркується автоматично.",
+    },
   },
   {
     name: "howToUse",
     type: "richText",
     label: "Спосіб застосування",
-  },
-  {
-    name: "description",
-    type: "richText",
-    label: "Опис",
   },
   {
     name: "ingredients",

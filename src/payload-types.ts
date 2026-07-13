@@ -305,6 +305,8 @@ export interface SkinType {
  */
 export interface Product {
   id: number;
+  image: number | Media;
+  line: number | ProductLine;
   /**
    * Тільки власна назва товару, без лінійки (напр. «Energizing Pack», а не «Lamellar Mode Energizing Pack»). Лінійка показується окремим рядком над назвою.
    */
@@ -313,38 +315,25 @@ export interface Product {
    * Частина URL товару. Лишіть порожнім — згенерується з лінійки + назви (напр. «lamellar-mode-cleansing»).
    */
   slug: string;
-  line: number | ProductLine;
   /**
-   * Зона догляду: обличчя, тіло, волосся, макіяж/база.
+   * Один рядок суті під назвою (напр. «ламелярна есенція з колагеном»). Показується і на картці каталогу.
    */
-  category: number | ProductCategory;
-  type: number | ProductType;
+  shortDescription?: string | null;
+  /**
+   * Напр. «50 ml», «280 г».
+   */
+  volume?: string | null;
   concerns?: (number | Concern)[] | null;
   /**
    * Для якого типу шкіри. Лишіть порожнім, якщо засіб універсальний (підходить будь-якій).
    */
   skinTypes?: (number | SkinType)[] | null;
-  image: number | Media;
   /**
-   * Порядок усередині лінійки (менше число — вище).
+   * Зона догляду: обличчя, тіло, волосся, макіяж/база.
    */
-  order?: number | null;
-  /**
-   * Напр. «50 ml», «280 г».
-   */
-  volume?: string | null;
-  /**
-   * Один рядок суті під назвою (напр. «ламелярна есенція з колагеном»). Показується і на картці каталогу.
-   */
-  shortDescription?: string | null;
-  keyIngredients?:
-    | {
-        name: string;
-        benefit?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  howToUse?: {
+  category: number | ProductCategory;
+  type: number | ProductType;
+  description?: {
     root: {
       type: string;
       children: {
@@ -359,7 +348,11 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
-  description?: {
+  /**
+   * По одному компоненту на рядок у форматі «Назва – дія». Маркери (•, -) не потрібні — список на сайті маркується автоматично.
+   */
+  activeComponents?: string | null;
+  howToUse?: {
     root: {
       type: string;
       children: {
@@ -378,6 +371,10 @@ export interface Product {
    * Повний склад англійською, суцільним текстом через кому.
    */
   ingredients?: string | null;
+  /**
+   * Порядок усередині лінійки (менше число — вище).
+   */
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -654,27 +651,21 @@ export interface SkinTypesSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  image?: T;
+  line?: T;
   title?: T;
   slug?: T;
-  line?: T;
-  category?: T;
-  type?: T;
+  shortDescription?: T;
+  volume?: T;
   concerns?: T;
   skinTypes?: T;
-  image?: T;
-  order?: T;
-  volume?: T;
-  shortDescription?: T;
-  keyIngredients?:
-    | T
-    | {
-        name?: T;
-        benefit?: T;
-        id?: T;
-      };
-  howToUse?: T;
+  category?: T;
+  type?: T;
   description?: T;
+  activeComponents?: T;
+  howToUse?: T;
   ingredients?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
