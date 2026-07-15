@@ -1,6 +1,6 @@
 import type { Product } from "@/payload-types";
 
-/** Lexical-стан richText-полів Payload (description / howToUse). */
+/** Lexical-стан richText-полів Payload (description / howToUse / ingredients). */
 export type TRichTextValue = Product["description"];
 
 /**

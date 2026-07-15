@@ -31,8 +31,8 @@ export type TProductDetail = {
   activeComponents: string | null;
   description: Product["description"];
   howToUse: Product["howToUse"];
-  /** Повний склад (INCI) англійською — суцільний текст. */
-  ingredients: string | null;
+  /** Повний склад (INCI) англійською — richText (суцільний текст або абзаци). */
+  ingredients: Product["ingredients"];
   image: {
     alt: string;
     base: TProductImageVariant;

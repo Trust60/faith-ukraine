@@ -48,10 +48,11 @@ export const productContentFields: Field[] = [
   },
   {
     name: "ingredients",
-    type: "textarea",
+    type: "richText",
     label: "Ingredients (INCI)",
     admin: {
-      description: "Повний склад англійською, суцільним текстом через кому.",
+      description:
+        "Повний склад англійською — суцільним текстом через кому або окремими абзацами.",
     },
   },
 ];

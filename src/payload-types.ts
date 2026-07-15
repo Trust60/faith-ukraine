@@ -368,9 +368,23 @@ export interface Product {
     [k: string]: unknown;
   } | null;
   /**
-   * Повний склад англійською, суцільним текстом через кому.
+   * Повний склад англійською — суцільним текстом через кому або окремими абзацами.
    */
-  ingredients?: string | null;
+  ingredients?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Порядок усередині лінійки (менше число — вище).
    */

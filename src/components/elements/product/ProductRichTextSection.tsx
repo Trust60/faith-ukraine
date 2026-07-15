@@ -15,7 +15,7 @@ type TProductRichTextSectionProps = {
   className?: string;
 };
 
-/** Секція сторінки товару з richText-контентом Payload («Опис», «Спосіб застосування»). */
+/** Секція сторінки товару з richText-контентом Payload («Опис», «Спосіб застосування», INCI). */
 export function ProductRichTextSection({
   title,
   data,
