@@ -1,5 +1,5 @@
 import { SectionHeading } from "@/ui/SectionHeading";
-import { StoryParagraph } from "./StoryParagraph";
+import { StoryParagraph, getParagraphKey } from "./StoryParagraph";
 import type { TStoryParagraphContent } from "./StoryParagraph";
 
 export type TStoryBlockContent = {
@@ -8,11 +8,6 @@ export type TStoryBlockContent = {
 };
 
 type TStoryBlockProps = TStoryBlockContent;
-
-function getParagraphKey(paragraph: TStoryParagraphContent): string {
-  const text = typeof paragraph === "string" ? paragraph : paragraph[0].text;
-  return text.slice(0, 32);
-}
 
 /** Текстовий блок сторінки «Про FAITH»: заголовок + абзаци. */
 export function StoryBlock({ heading, paragraphs }: TStoryBlockProps) {

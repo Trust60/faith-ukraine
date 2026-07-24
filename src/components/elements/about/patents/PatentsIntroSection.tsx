@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/ui/Container";
 import { SectionHeading } from "@/ui/SectionHeading";
-import { StoryParagraph } from "../StoryParagraph";
+import { StoryParagraph, getParagraphKey } from "../StoryParagraph";
 import {
   PATENTS_CERTIFICATES,
   PATENTS_INTRO_BLOCK,
@@ -17,7 +17,7 @@ export function PatentsIntroSection() {
             <SectionHeading as="h1">{PATENTS_INTRO_BLOCK.heading}</SectionHeading>
             <div className="mt-5 space-y-5">
               {PATENTS_INTRO_BLOCK.paragraphs.map((paragraph) => (
-                <StoryParagraph key={paragraph.slice(0, 32)} paragraph={paragraph} />
+                <StoryParagraph key={getParagraphKey(paragraph)} paragraph={paragraph} />
               ))}
             </div>
           </div>
