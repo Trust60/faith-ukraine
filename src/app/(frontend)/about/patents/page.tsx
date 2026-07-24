@@ -1,0 +1,18 @@
+import type { Metadata } from "next";
+import { PatentsIntroSection } from "@/components/elements/about/patents/PatentsIntroSection";
+import { PatentsListSection } from "@/components/elements/about/patents/PatentsListSection";
+
+export const metadata: Metadata = {
+  title: "Міжнародні патенти FAITH — захист інноваційних технологій",
+  description:
+    "Міжнародні патенти бренду FAITH у США, Тайвані, Китаї, Південній Кореї та Європі: захищені методи ферментації, живий колаген і технології доставки активних інгредієнтів.",
+};
+
+export default function PatentsPage() {
+  return (
+    <>
+      <PatentsIntroSection />
+      <PatentsListSection />
+    </>
+  );
+}
