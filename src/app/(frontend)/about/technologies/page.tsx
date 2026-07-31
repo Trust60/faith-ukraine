@@ -5,6 +5,7 @@ import { LiposomesSection } from "@/components/elements/about/technologies/Lipos
 import { LiposomeTypesSection } from "@/components/elements/about/technologies/LiposomeTypesSection";
 import { CollagenSection } from "@/components/elements/about/technologies/CollagenSection";
 import { Mc2xSection } from "@/components/elements/about/technologies/Mc2xSection";
+import { SectionSeam } from "@/ui/SectionSeam";
 
 export const metadata: Metadata = {
   title: "Технології FAITH — ламелярний метод, ліпосоми та MC2X",
@@ -17,11 +18,24 @@ export default function TechnologiesPage() {
     <>
       <h1 className="sr-only">Технології FAITH</h1>
       <GelBaseSection />
-      <LamellarMethodSection />
-      <LiposomesSection />
-      <LiposomeTypesSection />
-      <CollagenSection />
-      <Mc2xSection />
+
+      {/* Стикові тіні між білими секціями — як на «Про FAITH» і «Для професіоналів».
+          Першу секцію не обгортаємо: над нею лише шапка. */}
+      <SectionSeam>
+        <LamellarMethodSection />
+      </SectionSeam>
+      <SectionSeam>
+        <LiposomesSection />
+      </SectionSeam>
+      <SectionSeam>
+        <LiposomeTypesSection />
+      </SectionSeam>
+      <SectionSeam>
+        <CollagenSection />
+      </SectionSeam>
+      <SectionSeam>
+        <Mc2xSection />
+      </SectionSeam>
     </>
   );
 }

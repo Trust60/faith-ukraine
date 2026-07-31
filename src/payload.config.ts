@@ -17,6 +17,7 @@ import { ProductTypes } from "@/collections/ProductTypes";
 import { Concerns } from "@/collections/Concerns";
 import { SkinTypes } from "@/collections/SkinTypes";
 import { Products } from "@/collections/Products";
+import { Submissions } from "@/collections/Submissions";
 import { buildStorageFileURL } from "@/utils/storage";
 
 const filename = fileURLToPath(import.meta.url);
@@ -45,6 +46,7 @@ export default buildConfig({
     SkinTypes,
     Products,
     Partners,
+    Submissions,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

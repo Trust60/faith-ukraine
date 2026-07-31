@@ -4,6 +4,7 @@ import * as migration_20260630_163857_catalog_taxonomy from './20260630_163857_c
 import * as migration_20260709_101139_add_product_ingredients from './20260709_101139_add_product_ingredients';
 import * as migration_20260713_142236_refactor_active_components from './20260713_142236_refactor_active_components';
 import * as migration_20260715_124416_ingredients_rich_text from './20260715_124416_ingredients_rich_text';
+import * as migration_20260730_193100_submissions_add from './20260730_193100_submissions_add';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260715_124416_ingredients_rich_text.up,
     down: migration_20260715_124416_ingredients_rich_text.down,
-    name: '20260715_124416_ingredients_rich_text'
+    name: '20260715_124416_ingredients_rich_text',
+  },
+  {
+    up: migration_20260730_193100_submissions_add.up,
+    down: migration_20260730_193100_submissions_add.down,
+    name: '20260730_193100_submissions_add'
   },
 ];

@@ -4,6 +4,7 @@ import { StorySection } from "@/components/elements/about/StorySection";
 import { PillarsSection } from "@/components/elements/about/PillarsSection";
 import { UniquenessSection } from "@/components/elements/about/UniquenessSection";
 import { DirectionsSection } from "@/components/elements/about/DirectionsSection";
+import { SectionSeam } from "@/ui/SectionSeam";
 
 export const metadata: Metadata = {
   title: "Про FAITH — історія та філософія бренду",
@@ -16,9 +17,17 @@ export default function AboutPage() {
     <>
       <AboutHeroSection />
       <StorySection />
-      <PillarsSection />
-      <UniquenessSection />
-      <DirectionsSection />
+
+      {/* Білі секції зі стиковими тінями між ними (як на сторінці «Партнери»). */}
+      <SectionSeam>
+        <PillarsSection />
+      </SectionSeam>
+      <SectionSeam>
+        <UniquenessSection />
+      </SectionSeam>
+      <SectionSeam>
+        <DirectionsSection />
+      </SectionSeam>
     </>
   );
 }

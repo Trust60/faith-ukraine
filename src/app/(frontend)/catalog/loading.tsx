@@ -1,5 +1,4 @@
-import { Skeleton } from "@/ui/Skeleton";
-import { ProductGridSkeleton } from "@/components/elements/catalog/ProductGridSkeleton";
+import { CatalogViewSkeleton } from "@/components/elements/catalog/CatalogViewSkeleton";
 
 /**
  * Стан завантаження каталогу: та сама геометрія, що й сторінка з фільтрами (тулбар +
@@ -12,21 +11,7 @@ export default function CatalogLoading() {
         Каталог
       </h1>
 
-      <div className="mt-8 md:mt-10">
-        <div className="flex items-center justify-between gap-4">
-          <Skeleton className="h-5 w-24" />
-          <Skeleton className="h-11 w-44" />
-        </div>
-
-        <div className="mt-6 flex items-start gap-8 lg:gap-10">
-          <div className="hidden w-64 shrink-0 space-y-4 lg:block" aria-hidden>
-            {Array.from({ length: 5 }, (_, index) => (
-              <Skeleton key={index} className="h-8 w-full" />
-            ))}
-          </div>
-          <ProductGridSkeleton className="min-w-0 flex-1" />
-        </div>
-      </div>
+      <CatalogViewSkeleton className="mt-8 md:mt-10" />
 
       <span className="sr-only" role="status" aria-live="polite">
         Завантаження каталогу…

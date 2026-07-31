@@ -25,8 +25,13 @@ const EAGER_COUNT = 8;
  * зміна фільтра чи сортування скидає пагінацію на першу пачку, щоб не лишалась
  * «діра» з попереднього набору.
  */
-export function useCatalogFilters(products: TCatalogProduct[]) {
-  const [selection, setSelection] = useState<TSelection>(createEmptySelection);
+export function useCatalogFilters(
+  products: TCatalogProduct[],
+  initialSelection?: TSelection,
+) {
+  const [selection, setSelection] = useState<TSelection>(
+    () => initialSelection ?? createEmptySelection(),
+  );
   const [sort, setSort] = useState<TSortValue>("recommended");
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
+import { selectionFromParams } from "@/utils/catalog-filter";
 import { CatalogToolbar } from "./CatalogToolbar";
 import { CatalogList } from "./CatalogList";
 import { CatalogFilters } from "./filters/CatalogFilters";
@@ -15,10 +17,19 @@ type TCatalogViewProps = TCatalogData & { className?: string };
  * сайдбар фільтрів на десктопі (lg+) / шторка на мобільному, і сітка товарів.
  * Уся фільтрація/сортування клієнтські (useCatalogFilters) — миттєві, без запитів.
  * Панель фільтрів рендериться двічі (сайдбар + шторка) від одного стану — вони синхронні.
+ *
+ * Query-параметри (?line=…, ?concern=… — див. selectionFromParams) задають лише
+ * початкову вибірку. Читаємо їх на клієнті, а не через серверний searchParams, щоб
+ * сторінка каталогу лишалась статичною (ISR).
  */
 export function CatalogView({ products, facets, className }: TCatalogViewProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const filters = useCatalogFilters(products);
+  const searchParams = useSearchParams();
+  const initialSelection = useMemo(
+    () => selectionFromParams(searchParams),
+    [searchParams],
+  );
+  const filters = useCatalogFilters(products, initialSelection);
 
   const filtersPanel = (
     <CatalogFilters

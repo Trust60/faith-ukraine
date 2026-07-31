@@ -58,6 +58,10 @@
   --color-nav: #585651;
   /* Сіра смуга секції «Програма лояльності» (сторінка «Для професіоналів») */
   --color-pro-dark: #58585a;
+  /* Тёпло-сіра смуга бігучого рядка під hero (як на WordPress) */
+  --color-marquee: #8f8a88;
+  /* Холодний світлий фон діагональних панелей на головній */
+  --color-panel: #f7f7f8;
 
   /* Typography */
   --font-sans: var(--font-sans);
@@ -79,6 +83,10 @@
      → GPU-композит. Спрацьовує, коли картка відображається (mount або показ після
      фільтра/«Показати ще»); прихована картка — display:none, тож пропусків у сітці немає. */
   --animate-reveal: reveal 0.5s ease-out both;
+
+  /* Бігучий рядок під hero. Трек містить два однакові набори фраз, тому зсув на -50%
+     повертає його в стартову позицію — цикл безшовний. Анімується лише transform. */
+  --animate-marquee: marquee 30s linear infinite;
 
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -135,6 +143,94 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/**
+ * Паралакс фонового фото. Шар на 50% вищий за секцію → запас по 25% висоти секції з кожного
+ * боку (для секції 575px це ~144px), а зсув ±15% висоти шару — це ~129px. Запас більший за
+ * зсув, тому край фото не відкривається. Менша амплітуда (пробував ±6% при шарі 130%) дає
+ * лише ~46px ходу на всю сторінку — ефекту не видно взагалі.
+ */
+@keyframes parallax-drift {
+  from {
+    transform: translate3d(0, -15%, 0);
+  }
+  to {
+    transform: translate3d(0, 15%, 0);
+  }
+}
+
+/**
+ * Каскадна поява прямих дітей блока (карток у сітці, фото в рядку). Стан тримає
+ * `<Reveal cascade>` в атрибуті `data-reveal` на цьому ж елементі — до маунту атрибут
+ * має значення `initial`, тобто діти видимі й без JS.
+ */
+@utility reveal-cascade {
+  &[data-reveal="hidden"] > * {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  &[data-reveal="shown"] > * {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+  }
+
+  &[data-reveal="shown"] > *:nth-child(2) {
+    transition-delay: 0.08s;
+  }
+  &[data-reveal="shown"] > *:nth-child(3) {
+    transition-delay: 0.16s;
+  }
+  &[data-reveal="shown"] > *:nth-child(4) {
+    transition-delay: 0.24s;
+  }
+  &[data-reveal="shown"] > *:nth-child(5) {
+    transition-delay: 0.32s;
+  }
+  &[data-reveal="shown"] > *:nth-child(6) {
+    transition-delay: 0.4s;
+  }
+  &[data-reveal="shown"] > *:nth-child(n + 7) {
+    transition-delay: 0.48s;
+  }
+}
+
+/**
+ * Паралакс фонового фото: `parallax-band` — на секцію, `parallax-drift` — на шар з фото
+ * всередині неї. Анімація привʼязана до прогресу появи секції у вʼюпорті.
+ *
+ * Чому іменований timeline, а не `view()` на самому шарі: секція має `overflow: hidden`,
+ * тобто вона сама є scroll-контейнером, і `view()` порахував би прогрес шару відносно неї
+ * — а вона не скролиться, таймлайн виходить неактивним і анімації немає. Тому субʼєктом
+ * робимо саму секцію: для неї scroll-контейнер — це документ.
+ *
+ * Скорочення `animation` скидає `animation-timeline`, тому обидві властивості лежать в
+ * одному правилі саме в цьому порядку — інакше порядок утиліт Tailwind зламав би ефект.
+ * Тому ж `prefers-reduced-motion` тримаємо тут, а не варіантом `motion-reduce:`.
+ * Браузери без scroll-driven animations просто показують статичне фото.
+ */
+@utility parallax-band {
+  view-timeline-name: --parallax-band;
+}
+
+@utility parallax-drift {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: parallax-drift 1s linear both;
+    animation-timeline: --parallax-band;
   }
 }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PatentsIntroSection } from "@/components/elements/about/patents/PatentsIntroSection";
 import { PatentsListSection } from "@/components/elements/about/patents/PatentsListSection";
+import { SectionSeam } from "@/ui/SectionSeam";
 
 export const metadata: Metadata = {
   title: "Міжнародні патенти FAITH — захист інноваційних технологій",
@@ -12,7 +13,11 @@ export default function PatentsPage() {
   return (
     <>
       <PatentsIntroSection />
-      <PatentsListSection />
+
+      {/* Стикова тінь між білими секціями — як на «Про FAITH» і «Технологіях». */}
+      <SectionSeam>
+        <PatentsListSection />
+      </SectionSeam>
     </>
   );
 }

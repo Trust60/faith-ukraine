@@ -37,6 +37,37 @@ export const createEmptySelection = (): TSelection => ({
   skinTypes: [],
 });
 
+/** Ім'я query-параметра для кожної осі: /catalog?line=lamellar-mode&type=гель-крем */
+const AXIS_PARAM: Record<TFilterAxisKey, string> = {
+  categories: "category",
+  lines: "line",
+  types: "type",
+  concerns: "concern",
+  skinTypes: "skinType",
+};
+
+/**
+ * Початкова вибірка з query-параметрів URL: так посилання з інших сторінок (напр. картки
+ * ліній на головній) відкривають каталог із уже застосованим фільтром. Кілька значень
+ * однієї осі — через кому. URL лише задає старт: далі фільтри живуть у стані клієнта.
+ */
+export function selectionFromParams(
+  params: URLSearchParams | null,
+): TSelection {
+  const selection = createEmptySelection();
+  if (!params) return selection;
+
+  for (const axis of FILTER_AXES) {
+    const raw = params.get(AXIS_PARAM[axis.key]);
+    if (!raw) continue;
+    selection[axis.key] = raw
+      .split(",")
+      .map((slug) => slug.trim())
+      .filter(Boolean);
+  }
+  return selection;
+}
+
 export const SORT_OPTIONS = [
   { value: "recommended", label: "Рекомендовані" },
   { value: "step", label: "За кроком догляду" },
