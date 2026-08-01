@@ -30,6 +30,9 @@ export type TCatalogProduct = {
   // Слаг сторінки товару (/catalog/[slug]) — картка каталогу є посиланням.
   slug: string;
   lineName: string;
+  // Дескриптор («ламелярна есенція з колагеном») — підпис у результатах пошуку
+  // і головний україномовний корпус для зіставлення (назви товарів — латиниця).
+  shortDescription: string | null;
   image: {
     url: string;
     alt: string;
@@ -58,6 +61,7 @@ type TCatalogDoc = Pick<
   | "id"
   | "title"
   | "slug"
+  | "shortDescription"
   | "order"
   | "line"
   | "image"
@@ -107,6 +111,7 @@ function toCatalogProduct(product: TPopulatedProduct): TCatalogProduct {
     title,
     slug,
     lineName: line.name,
+    shortDescription: product.shortDescription ?? null,
     image: {
       url: card?.url ?? image.url ?? "",
       alt: image.alt,
@@ -130,10 +135,11 @@ async function loadCatalogData(): Promise<TCatalogData> {
     depth: 1,
     limit: 100,
     where: { _status: { equals: "published" } },
-    // Лише поля картки та осей фільтра — менше навантаження на БД і серіалізацію.
+    // Лише поля картки, пошуку та осей фільтра — менше навантаження на БД і серіалізацію.
     select: {
       title: true,
       slug: true,
+      shortDescription: true,
       line: true,
       image: true,
       order: true,

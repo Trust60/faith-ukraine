@@ -2,6 +2,7 @@
 
 import { OutlineButton } from "@/ui/OutlineButton";
 import { CatalogItem } from "./CatalogItem";
+import { CATALOG_GRID_CLASS } from "./grid";
 import type { TCatalogItem } from "@/utils/catalog-filter";
 
 type TCatalogListProps = {
@@ -51,7 +52,7 @@ export function CatalogList({
         </div>
       )}
 
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12 xl:grid-cols-4">
+      <ul className={CATALOG_GRID_CLASS}>
         {items.map((item) => (
           <CatalogItem
             key={item.product.id}

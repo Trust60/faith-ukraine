@@ -18,18 +18,18 @@ type TCatalogViewProps = TCatalogData & { className?: string };
  * Уся фільтрація/сортування клієнтські (useCatalogFilters) — миттєві, без запитів.
  * Панель фільтрів рендериться двічі (сайдбар + шторка) від одного стану — вони синхронні.
  *
- * Query-параметри (?line=…, ?concern=… — див. selectionFromParams) задають лише
- * початкову вибірку. Читаємо їх на клієнті, а не через серверний searchParams, щоб
- * сторінка каталогу лишалась статичною (ISR).
+ * Query-параметри (?line=…, ?concern=… — див. selectionFromParams) задають вибірку і
+ * при вході, і при зміні URL уже на цій сторінці (перехід із пошуку). Читаємо їх на
+ * клієнті, а не через серверний searchParams, щоб сторінка лишалась статичною (ISR).
  */
 export function CatalogView({ products, facets, className }: TCatalogViewProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const searchParams = useSearchParams();
-  const initialSelection = useMemo(
+  const urlSelection = useMemo(
     () => selectionFromParams(searchParams),
     [searchParams],
   );
-  const filters = useCatalogFilters(products, initialSelection);
+  const filters = useCatalogFilters(products, urlSelection);
 
   const filtersPanel = (
     <CatalogFilters

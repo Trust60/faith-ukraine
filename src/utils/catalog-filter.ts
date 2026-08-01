@@ -37,8 +37,11 @@ export const createEmptySelection = (): TSelection => ({
   skinTypes: [],
 });
 
-/** Ім'я query-параметра для кожної осі: /catalog?line=lamellar-mode&type=гель-крем */
-const AXIS_PARAM: Record<TFilterAxisKey, string> = {
+/**
+ * Ім'я query-параметра для кожної осі: /catalog?line=lamellar-mode&type=гель-крем
+ * Експортується, бо пошук будує з нього посилання на каталог із застосованим фільтром.
+ */
+export const AXIS_PARAM: Record<TFilterAxisKey, string> = {
   categories: "category",
   lines: "line",
   types: "type",
@@ -86,6 +89,10 @@ export type TCatalogItem = {
 
 export const countActive = (selection: TSelection): number =>
   FILTER_AXES.reduce((sum, axis) => sum + selection[axis.key].length, 0);
+
+/** Стабільний відбиток вибірки — щоб порівнювати «чи змінився фільтр в URL». */
+export const selectionKey = (selection: TSelection): string =>
+  FILTER_AXES.map((axis) => selection[axis.key].join(",")).join("|");
 
 /** Перемикає слаг у вибірці осі (додає/прибирає), повертаючи новий об'єкт вибірки. */
 export function toggleSelection(

@@ -5,6 +5,7 @@ import {
   annotateProducts,
   countActive,
   createEmptySelection,
+  selectionKey,
   sortProducts,
   toggleSelection,
   type TFilterAxisKey,
@@ -24,16 +25,31 @@ const EAGER_COUNT = 8;
  * Фільтрація/сортування — клієнтські й миттєві (усі товари вже в пам'яті). Будь-яка
  * зміна фільтра чи сортування скидає пагінацію на першу пачку, щоб не лишалась
  * «діра» з попереднього набору.
+ *
+ * `urlSelection` (з query-параметрів) не лише стартова: якщо URL зміниться вже після
+ * монтування — напр. з пошуку обрали категорію, коли ми ВЖЕ на /catalog — переносимо
+ * нову вибірку в стан. Далі фільтри знову живуть у стані клієнта: ручні перемикання
+ * URL не чіпають, тож і не скидаються.
  */
 export function useCatalogFilters(
   products: TCatalogProduct[],
-  initialSelection?: TSelection,
+  urlSelection?: TSelection,
 ) {
   const [selection, setSelection] = useState<TSelection>(
-    () => initialSelection ?? createEmptySelection(),
+    () => urlSelection ?? createEmptySelection(),
   );
   const [sort, setSort] = useState<TSortValue>("recommended");
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+
+  // Скидання стану на зміну пропса — прямо під час рендера (рекомендований React-спосіб):
+  // без useEffect, тож зайвого кадру зі старим фільтром не буде.
+  const urlKey = urlSelection ? selectionKey(urlSelection) : "";
+  const [appliedUrlKey, setAppliedUrlKey] = useState(urlKey);
+  if (urlKey !== appliedUrlKey) {
+    setAppliedUrlKey(urlKey);
+    setSelection(urlSelection ?? createEmptySelection());
+    setVisibleCount(INITIAL_VISIBLE);
+  }
 
   const sorted = useMemo(() => sortProducts(products, sort), [products, sort]);
   const { items, matchCount } = useMemo(
