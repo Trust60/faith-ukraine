@@ -11,9 +11,14 @@ type TFavoriteButtonProps = {
 };
 
 /**
- * «Додати в бажане» на сторінці товару. Стан — у сторі обраного (localStorage).
- * Лейбл незмінний: доданість передається через aria-pressed і візуально —
- * заливкою кнопки та зафарбованим сердцем.
+ * «Додати в бажане» на сторінці товару. Стан — у сторі обраного (localStorage) — видно
+ * і в тексті кнопки, і візуально (заливка + зафарбоване серце). Лейбли однакової довжини
+ * (ширина кнопки гуляє на ~1px), а сама кнопка — остання в колонці й вирівняна ліворуч,
+ * тож перемикання нічого не зсуває.
+ *
+ * aria-pressed НЕ ставимо: за WAI-ARIA APG стан несе або незмінний лейбл разом із
+ * aria-pressed, або лейбл, що змінюється, — але не обидва одразу (інакше скрінрідер
+ * озвучує стан двічі: «Додано в бажане, перемикач, натиснуто»).
  */
 export function FavoriteButton({ productId, className }: TFavoriteButtonProps) {
   useFavoritesHydration();
@@ -22,7 +27,6 @@ export function FavoriteButton({ productId, className }: TFavoriteButtonProps) {
 
   return (
     <OutlineButton
-      aria-pressed={isFavorite}
       onClick={() => toggle(productId)}
       className={cn("gap-3", isFavorite && "bg-heading text-white", className)}
     >
@@ -31,7 +35,7 @@ export function FavoriteButton({ productId, className }: TFavoriteButtonProps) {
         strokeWidth={1.5}
         aria-hidden
       />
-      Додати в бажане
+      {isFavorite ? "Додано в бажане" : "Додати в бажане"}
     </OutlineButton>
   );
 }
