@@ -16,3 +16,108 @@
     object-fit: contain;
   }
 }
+
+/*
+ * Картка заявки замість сирого JSON (src/components/admin/SubmissionCard.tsx).
+ * Кольори — виключно через змінні теми Payload (`--theme-elevation-*`), щоб
+ * картка однаково читалась і в світлій, і в темній темі адмінки.
+ */
+.submission-card {
+  padding: 1.5rem;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+  background-color: var(--theme-elevation-0);
+
+  &__kicker {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--theme-elevation-500);
+  }
+
+  &__name {
+    margin: 0.35rem 0 0;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  &__contact {
+    margin: 0.5rem 0 0;
+  }
+
+  &__contact-label {
+    color: var(--theme-elevation-500);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0 0;
+  }
+
+  &__action {
+    /* 44px тач-таргет: адмінкою користуються і з планшета. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 1.25rem;
+    border: 1px solid var(--theme-elevation-250);
+    border-radius: 3px;
+    color: var(--theme-elevation-800);
+    text-decoration: none;
+
+    &:hover {
+      background-color: var(--theme-elevation-100);
+    }
+  }
+
+  &__rows {
+    margin: 1.5rem 0 0;
+    border-top: 1px solid var(--theme-elevation-150);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: 0.25rem 1.5rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--theme-elevation-150);
+
+    dt {
+      color: var(--theme-elevation-500);
+    }
+
+    dd {
+      margin: 0;
+    }
+
+    /* Вузька колонка (мобільний, розділений екран) — підпис над значенням. */
+    @media (max-width: 40rem) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__raw {
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+
+    summary {
+      cursor: pointer;
+      color: var(--theme-elevation-500);
+    }
+
+    pre {
+      margin: 0.5rem 0 0;
+      padding: 0.75rem;
+      overflow-x: auto;
+      border-radius: 3px;
+      background-color: var(--theme-elevation-50);
+    }
+  }
+
+  &__empty {
+    color: var(--theme-elevation-500);
+  }
+}

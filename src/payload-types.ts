@@ -451,9 +451,6 @@ export interface Submission {
    * Імʼя та контакт із заявки — для колонки списку.
    */
   contact: string;
-  /**
-   * Усі поля форми як їх надіслав користувач.
-   */
   answers:
     | {
         [k: string]: unknown;

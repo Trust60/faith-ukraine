@@ -32,9 +32,10 @@ async function submit(
   const answers = parsed.data as Record<string, unknown>;
   const contact = `${answers.name} — ${answers.contact ?? answers.phone}`;
 
+  let created;
   try {
     const payload = await getPayloadClient();
-    await payload.create({
+    created = await payload.create({
       collection: "submissions",
       data: { type, contact, answers },
     });
@@ -43,7 +44,14 @@ async function submit(
   }
 
   try {
-    await sendSubmissionEmail({ type, contact, answers });
+    // Номер і дату беремо зі збереженого документа: у листі вони мають збігатися
+    // з тим, що менеджер побачить в адмінці.
+    await sendSubmissionEmail({
+      type,
+      id: created.id,
+      createdAt: new Date(created.createdAt),
+      answers,
+    });
   } catch (error) {
     // Заявка вже збережена — користувачу показуємо успіх, лист відправимо вручну.
     // Але в лог пишемо: без цього не видно, чому саме лист не дійшов.

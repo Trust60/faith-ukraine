@@ -1,4 +1,6 @@
 import { Resend } from "resend";
+import type { TSubmissionType } from "@/components/elements/forms/schemas";
+import { buildSubmissionEmail } from "./submission-email";
 
 /**
  * Лист-повідомлення менеджеру про нову заявку.
@@ -7,21 +9,14 @@ import { Resend } from "resend";
  * Якщо RESEND_API_KEY не заданий (локальна розробка, прев'ю), функція нічого не робить
  * — форма продовжує працювати, заявку видно в адмінці.
  */
-const SUBJECTS = {
-  consultation: "Нова анкета підбору догляду FAITH",
-  partnership: "Нова заявка на співпрацю FAITH",
-} as const;
-
 type TSendArgs = {
-  type: keyof typeof SUBJECTS;
-  contact: string;
+  type: TSubmissionType;
+  id: number | string;
+  createdAt: Date;
   answers: Record<string, unknown>;
 };
 
-const formatValue = (value: unknown) =>
-  Array.isArray(value) ? value.join(", ") : String(value ?? "—");
-
-export async function sendSubmissionEmail({ type, contact, answers }: TSendArgs) {
+export async function sendSubmissionEmail(args: TSendArgs) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.SUBMISSIONS_EMAIL_TO;
   const from = process.env.SUBMISSIONS_EMAIL_FROM;
@@ -41,20 +36,24 @@ export async function sendSubmissionEmail({ type, contact, answers }: TSendArgs)
     return;
   }
 
-  const lines = Object.entries(answers).map(
-    ([key, value]) => `${key}: ${formatValue(value)}`,
-  );
+  const { subject, html, text, replyTo } = buildSubmissionEmail(args);
+
+  // Шлемо обидві частини: HTML-only лист ловить MIME_HTML_ONLY у спам-фільтрах,
+  // а якщо `text` не передати — Resend згенерує його сам і гірше.
+  // `replyTo` ставимо лише коли контакт справді email: тоді менеджер відповідає
+  // клієнту звичайною кнопкою «Відповісти».
+  const { error } = await new Resend(apiKey).emails.send({
+    from,
+    to,
+    subject,
+    html,
+    text,
+    replyTo,
+  });
 
   // Resend SDK не кидає виключення на помилку API, а повертає її в `error`,
   // тому перевіряємо саме поле — інакше відмова (напр. неверифікований домен
   // відправника) виглядала б як успішна відправка.
-  const { error } = await new Resend(apiKey).emails.send({
-    from,
-    to,
-    subject: `${SUBJECTS[type]} — ${contact}`,
-    text: lines.join("\n"),
-  });
-
   if (error) {
     throw new Error(`Resend відмовив: ${error.name} — ${error.message}`);
   }

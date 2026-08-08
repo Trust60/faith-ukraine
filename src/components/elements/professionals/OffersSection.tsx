@@ -1,13 +1,16 @@
 import Image from "next/image";
 import { Container } from "@/ui/Container";
 import { SectionHeading } from "@/ui/SectionHeading";
+import { PartnershipDialog } from "@/components/elements/forms/PartnershipDialog";
 import { OFFERS } from "./content/cooperation-content";
 import { OfferCard } from "./OfferCard";
-import { CtaButton } from "./CtaButton";
 
 /**
  * Секція «Ми пропонуємо»: заголовок і CTA-кнопка — на білому тлі (поза смугою). Повноширинна
  * смуга з розмитим продуктовим фото-фоном містить лише картки переваг (за макетом).
+ *
+ * CTA відкриває ту саму модалку «Співпраця», що й на головній: форма одна на весь сайт
+ * (`PartnershipDialog`), тож копія, валідація й тип заявки не дублюються.
  */
 export function OffersSection() {
   return (
@@ -44,7 +47,7 @@ export function OffersSection() {
 
       <Container>
         <div className="mt-12 flex justify-center md:mt-16 mb-10 md:mb-15">
-          <CtaButton>{OFFERS.ctaLabel}</CtaButton>
+          <PartnershipDialog triggerLabel={OFFERS.ctaLabel} />
         </div>
       </Container>
     </section>
