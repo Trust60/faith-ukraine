@@ -1,13 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import { FooterInfo } from "./FooterInfo";
+import { usePathname } from "next/navigation";
 
-/**
- * Футер магазину: шовкове тло, контактна інформація ліворуч і великий
- * акцентний знак FAITH праворуч (унизу на мобільному).
- */
 export function Footer() {
+  const pathname = usePathname();
+  const isContact = pathname === "/contacts";
+  const contactClasses = isContact
+    ? "min-h-[calc(100dvh-112px)] flex flex-col justify-center"
+    : "";
   return (
-    <footer className="relative isolate overflow-hidden border-t border-line bg-background">
+    <footer
+      className={`relative isolate overflow-hidden border-t border-line bg-background ${contactClasses}`}
+    >
       <Image
         src="/footer-background.webp"
         alt=""
