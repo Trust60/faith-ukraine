@@ -1,6 +1,8 @@
 /**
- * Фонове YouTube-відео головної. Параметри — ті самі, що на WP: autoplay без звуку,
- * зациклено (loop потребує playlist з тим самим id), без контролів і брендингу.
+ * Фонове YouTube-відео головної: autoplay без звуку, зациклено (loop потребує playlist
+ * з тим самим id), без контролів, кнопки повного екрана, анотацій і клавіатури.
+ * Заголовок відео на старті та велику кнопку «play» (коли браузер блокує autoplay)
+ * YouTube вимкнути не дає — повністю без них можна лише з власним mp4 у <video>.
  */
 const YOUTUBE_BASE = "https://www.youtube.com/embed";
 
@@ -11,6 +13,9 @@ const buildSrc = (id: string, extra: Record<string, string>) => {
     loop: "1",
     playlist: id,
     controls: "0",
+    fs: "0",
+    iv_load_policy: "3",
+    disablekb: "1",
     rel: "0",
     modestbranding: "1",
     playsinline: "1",

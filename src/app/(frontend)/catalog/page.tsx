@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getCatalogData } from "@/data/catalog";
 import { CatalogView } from "@/components/elements/catalog/CatalogView";
-import { CatalogViewSkeleton } from "@/components/elements/catalog/CatalogViewSkeleton";
+import { CatalogViewFromUrl } from "@/components/elements/catalog/CatalogViewFromUrl";
 
 export const metadata: Metadata = {
   title: "Каталог — FAITH",
@@ -24,10 +24,20 @@ export default async function CatalogPage() {
       {products.length === 0 ? (
         <p className="mt-10 text-center text-nav">Товари скоро з’являться.</p>
       ) : (
-        // CatalogView читає початковий фільтр із useSearchParams — без Suspense це
-        // зірвало б пререндер сторінки, тому оболонку віддаємо статично.
-        <Suspense fallback={<CatalogViewSkeleton className="mt-8 md:mt-10" />}>
-          <CatalogView
+        // Фільтр з URL доступний лише на клієнті (useSearchParams), тому статичний HTML
+        // містить fallback — і це справжні картки без фільтрів, а не скелетон: товари
+        // видно (і індексуються) одразу, ще до завантаження JS. Після гідрації
+        // застосовується вибірка з URL.
+        <Suspense
+          fallback={
+            <CatalogView
+              products={products}
+              facets={facets}
+              className="mt-8 md:mt-10"
+            />
+          }
+        >
+          <CatalogViewFromUrl
             products={products}
             facets={facets}
             className="mt-8 md:mt-10"

@@ -19,6 +19,7 @@ type THeroSlideProps = {
  */
 export function HeroSlide({ slide, index, total }: THeroSlideProps) {
   const isLightText = slide.tone === "light";
+  const toneClass = isLightText ? "text-white" : "text-black";
 
   return (
     <li
@@ -55,11 +56,13 @@ export function HeroSlide({ slide, index, total }: THeroSlideProps) {
             />
           )}
 
+          {/* Шрифти рядків — як на WP: привітання й підпис дистрибʼютора Arial 500,
+              підпис слайда Open Sans 300. */}
           {slide.title && (
             <h2
               className={cn(
-                "font-serif text-[1.375rem] leading-snug tracking-[0.06em] md:text-[1.5625rem]",
-                isLightText ? "text-white" : "text-ink-soft",
+                "font-arial text-[1.375rem] font-medium leading-snug tracking-[0.08em] md:text-[1.5625rem]",
+                toneClass,
               )}
             >
               {slide.title}
@@ -69,8 +72,8 @@ export function HeroSlide({ slide, index, total }: THeroSlideProps) {
           {slide.subtitle && (
             <p
               className={cn(
-                "mt-6 font-serif text-sm uppercase tracking-[0.04em] md:mt-8 md:text-lg",
-                isLightText ? "text-white" : "text-ink-soft",
+                "mt-6 font-arial text-sm font-medium uppercase md:mt-8 md:text-lg",
+                toneClass,
               )}
             >
               {slide.subtitle}
@@ -80,8 +83,8 @@ export function HeroSlide({ slide, index, total }: THeroSlideProps) {
           {slide.caption && (
             <p
               className={cn(
-                "mt-4 font-serif text-lg tracking-[0.12em] md:mt-8 md:text-[1.5625rem]",
-                isLightText ? "text-white" : "text-ink-soft",
+                "mt-4 font-opensans text-lg font-light tracking-[0.12em] md:mt-8 md:text-[1.5625rem]",
+                toneClass,
               )}
             >
               {slide.caption.emphasis && <em>{slide.caption.emphasis}</em>}

@@ -23,7 +23,7 @@ export function CareLinesSection() {
         <Reveal
           as="ul"
           cascade
-          className="reveal-cascade mx-auto mt-10 grid max-w-[1400px] gap-10 md:mt-12 md:grid-cols-2 md:grid-rows-4 md:gap-x-8 md:gap-y-6"
+          className="reveal-cascade mx-auto mt-10 grid max-w-[1400px] gap-10 md:mt-12 md:grid-cols-2 md:grid-rows-4 md:gap-x-8 md:gap-y-5"
         >
           {CARE_LINES.map((line, index) => (
             <CareLineCard

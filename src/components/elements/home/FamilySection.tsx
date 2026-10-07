@@ -9,7 +9,8 @@ import {
   FAMILY_SECTION,
 } from "./content/family-content";
 
-const PHOTO_CLASS = "aspect-[3/4] w-full max-w-[26rem] rounded-[16px] lg:max-w-none";
+// Пропорція фото — як на WP (389×465 ≈ 5:6).
+const PHOTO_CLASS = "aspect-[5/6] w-full max-w-[26rem] rounded-[16px] lg:max-w-none";
 
 /**
  * «Косметика для всієї родини»: два списки переваг між двома фото. На мобільному
@@ -23,14 +24,14 @@ export function FamilySection() {
           <SectionHeading as="h2" align="center">
             {FAMILY_SECTION.heading}
           </SectionHeading>
-          <p className="mt-3 text-center font-serif text-base italic leading-relaxed text-ink md:text-lg">
+          <p className="mt-3 text-center font-serif text-base italic leading-[1.35] text-ink md:text-xl">
             {FAMILY_SECTION.subheading}
           </p>
         </Reveal>
 
         <Reveal
           cascade
-          className="reveal-cascade mt-10 grid items-center justify-items-center gap-10 md:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)_minmax(0,1fr)] lg:gap-12"
+          className="reveal-cascade mt-10 grid items-center justify-items-center gap-10 md:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,34rem)_minmax(0,1fr)] lg:gap-12"
         >
           <FramedImage
             src={FAMILY_IMAGES.left.src}

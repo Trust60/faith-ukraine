@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lora } from "next/font/google";
+import { Lora, Open_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/utils/cn";
@@ -9,6 +9,14 @@ import { Footer } from "@/layout/footer/Footer";
 const lora = Lora({
   variable: "--font-lora",
   subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+
+// Лише світле накреслення для підписів hero-слайдера (як на WP).
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
+  subsets: ["latin", "cyrillic"],
+  weight: "300",
   display: "swap",
 });
 
@@ -31,7 +39,12 @@ export default function FrontendLayout({
   return (
     <html
       lang="uk"
-      className={cn(lora.variable, bebasNeue.variable, "h-full antialiased")}
+      className={cn(
+        lora.variable,
+        openSans.variable,
+        bebasNeue.variable,
+        "h-full antialiased",
+      )}
     >
       <body className="flex min-h-full flex-col bg-background text-ink">
         <Header />

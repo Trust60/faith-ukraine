@@ -63,9 +63,14 @@
   /* Холодний світлий фон діагональних панелей на головній */
   --color-panel: #f7f7f8;
 
-  /* Typography */
-  --font-sans: var(--font-sans);
+  /* Typography. Базовий шрифт сайту — Lora (як на WP). Тут НЕ можна писати
+     `--font-sans: var(--font-sans)`: змінна посилається сама на себе, стає невалідною,
+     і браузер падає на Times New Roman (меню, футер). */
+  --font-sans: var(--font-lora), Georgia, serif;
   --font-serif: var(--font-lora), Georgia, serif;
+  /* Рядки hero-слайдера — як на WP: привітання Arial, підписи Open Sans 300 */
+  --font-arial: Arial, Helvetica, sans-serif;
+  --font-opensans: var(--font-open-sans), Arial, sans-serif;
   /* Великі дисплейні заголовки — Bebas Neue Cyrillic */
   --font-display: var(--font-bebas), "Arial Narrow", sans-serif;
 

@@ -22,10 +22,10 @@ export function FooterInfo() {
           className="size-16 lg:size-18"
         />
         <div>
-          <p className="font-serif text-lg text-ink-soft sm:text-base">
+          <p className="font-serif text-lg text-ink-soft md:text-xl">
             {DISTRIBUTOR.title}
           </p>
-          <p className="text-sm">{DISTRIBUTOR.subtitle}</p>
+          <p className="text-base">{DISTRIBUTOR.subtitle}</p>
         </div>
       </div>
 
@@ -38,12 +38,17 @@ export function FooterInfo() {
       </ul>
 
       <div className="flex flex-col gap-1">
-        <h2 className="font-serif text-lg text-ink-soft">
+        <h2 className="font-serif text-lg text-ink-soft md:text-xl">
           {MANUFACTURER.heading}
         </h2>
-        <p className="max-w-sm text-sm leading-relaxed">
+        <a
+          href={MANUFACTURER.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="max-w-md text-base leading-relaxed underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
           {MANUFACTURER.address}
-        </p>
+        </a>
       </div>
 
       <ul className="flex items-center gap-4">

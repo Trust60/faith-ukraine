@@ -13,7 +13,7 @@ export function BeautyConceptSection() {
           <SectionHeading as="h2" align="center">
             {CONCEPT_SECTION.heading}
           </SectionHeading>
-          <p className="mx-auto mt-4 max-w-4xl text-center font-serif text-base leading-relaxed text-ink md:text-lg">
+          <p className="mx-auto mt-4 max-w-4xl text-center font-serif text-base leading-[1.35] text-ink md:text-xl">
             {CONCEPT_SECTION.subheading}
           </p>
         </Reveal>

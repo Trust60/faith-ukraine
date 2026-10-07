@@ -13,7 +13,7 @@ export function DeliverySection() {
           <SectionHeading as="h2" align="center">
             {DELIVERY_SECTION.heading}
           </SectionHeading>
-          <p className="mx-auto mt-3 max-w-3xl text-center font-serif text-base italic leading-relaxed text-ink md:text-lg">
+          <p className="mx-auto mt-3 max-w-3xl text-center font-serif text-base italic leading-[1.35] text-ink md:text-xl">
             {DELIVERY_SECTION.subheading}
           </p>
         </Reveal>

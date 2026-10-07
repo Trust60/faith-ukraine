@@ -15,8 +15,8 @@ export function Logo({ className }: TLogoProps) {
         width={799}
         height={449}
         priority
-        sizes="(min-width: 1536px) 160px, 128px"
-        className="h-16 w-auto 2xl:h-20"
+        sizes="(min-width: 1536px) 160px, (min-width: 1200px) 128px, 160px"
+        className="h-20 w-auto nav:h-16 2xl:h-20"
       />
     </Link>
   );

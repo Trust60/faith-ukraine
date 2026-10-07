@@ -28,8 +28,9 @@ export function MobileMenu() {
         aria-label="Відкрити меню"
         aria-expanded={open}
         onClick={() => setOpen(true)}
+        className="size-12"
       >
-        <Menu className="size-6" strokeWidth={1.5} aria-hidden />
+        <Menu className="size-9" strokeWidth={2} aria-hidden />
       </IconButton>
 
       <div

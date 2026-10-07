@@ -1,34 +1,33 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useCatalogFilters } from "@/hooks/use-catalog-filters";
-import { selectionFromParams } from "@/utils/catalog-filter";
+import type { TSelection } from "@/utils/catalog-filter";
 import { CatalogToolbar } from "./CatalogToolbar";
 import { CatalogList } from "./CatalogList";
 import { CatalogFilters } from "./filters/CatalogFilters";
 import { FilterDrawer } from "./filters/FilterDrawer";
 import type { TCatalogData } from "@/data/catalog";
 
-type TCatalogViewProps = TCatalogData & { className?: string };
+type TCatalogViewProps = TCatalogData & {
+  /** Вибірка з URL (див. CatalogViewFromUrl). Без неї — каталог без фільтрів. */
+  urlSelection?: TSelection;
+  className?: string;
+};
 
 /**
  * Каталог із фільтрами: тулбар (лічильник + сортування + кнопка «Фільтри» на мобільному),
  * сайдбар фільтрів на десктопі (lg+) / шторка на мобільному, і сітка товарів.
  * Уся фільтрація/сортування клієнтські (useCatalogFilters) — миттєві, без запитів.
  * Панель фільтрів рендериться двічі (сайдбар + шторка) від одного стану — вони синхронні.
- *
- * Query-параметри (?line=…, ?concern=… — див. selectionFromParams) задають вибірку і
- * при вході, і при зміні URL уже на цій сторінці (перехід із пошуку). Читаємо їх на
- * клієнті, а не через серверний searchParams, щоб сторінка лишалась статичною (ISR).
  */
-export function CatalogView({ products, facets, className }: TCatalogViewProps) {
+export function CatalogView({
+  products,
+  facets,
+  urlSelection,
+  className,
+}: TCatalogViewProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const searchParams = useSearchParams();
-  const urlSelection = useMemo(
-    () => selectionFromParams(searchParams),
-    [searchParams],
-  );
   const filters = useCatalogFilters(products, urlSelection);
 
   const filtersPanel = (

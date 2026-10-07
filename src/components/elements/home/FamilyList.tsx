@@ -1,20 +1,15 @@
-import { SectionHeading } from "@/ui/SectionHeading";
 import type { TFamilyListContent } from "./content/family-content";
 
 type TFamilyListProps = { list: TFamilyListContent };
 
-/** Список переваг: дисплейний підзаголовок + пункти з маркерами. */
+/** Список переваг: підзаголовок Lora bold 22px + пункти з маркерами. */
 export function FamilyList({ list }: TFamilyListProps) {
   return (
     <div>
-      <SectionHeading
-        as="h3"
-        align="center"
-        className="text-[24px]/[26px] md:text-[28px]"
-      >
+      <h3 className="text-center font-serif text-xl font-bold text-heading md:text-[1.375rem]">
         {list.title}
-      </SectionHeading>
-      <ul className="mt-4 list-disc space-y-2 pl-6 font-serif text-base leading-relaxed text-ink marker:text-ink md:text-lg">
+      </h3>
+      <ul className="mt-4 list-disc space-y-2 pl-6 font-serif text-base leading-[1.35] text-ink marker:text-heading md:text-xl">
         {list.items.map((item) => (
           <li key={item}>{item}</li>
         ))}

@@ -13,10 +13,10 @@ export function ConceptCard({ card }: TConceptCardProps) {
         sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw"
         className="aspect-square w-full rounded-[16px]"
       />
-      <h3 className="mt-6 text-center font-serif text-lg font-bold uppercase tracking-[0.02em] text-ink-soft md:text-xl">
+      <h3 className="mt-6 text-center font-serif text-lg font-bold uppercase leading-tight tracking-[0.02em] text-ink md:text-[1.375rem]">
         {card.title}
       </h3>
-      <p className="mt-3 text-center font-serif text-base leading-relaxed text-ink md:text-lg">
+      <p className="mt-3 text-center font-serif text-base leading-tight text-ink md:text-xl">
         {card.text}
       </p>
     </li>

@@ -33,8 +33,8 @@ export function SafetySection() {
             alt={SAFETY_STANDARD_LOGO.alt}
             width={SAFETY_STANDARD_LOGO.width}
             height={SAFETY_STANDARD_LOGO.height}
-            sizes="(min-width: 1024px) 160px, 144px"
-            className="mx-auto mt-10 h-auto w-[9rem] md:mt-12 lg:w-[10rem]"
+            sizes="(min-width: 1024px) 216px, 176px"
+            className="mx-auto mt-10 h-auto w-[11rem] md:mt-12 lg:w-[13.5rem]"
           />
         </Reveal>
 
